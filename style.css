@@ -16,3 +16,14 @@ a{
 ul{
     list-style: none;
 }
+
+.container{
+    width: 90%;
+    margin: auto;
+}
+
+/* API GOOGLE MAPS */
+#map{
+    height: 500px;
+    width: 100%;
+}
