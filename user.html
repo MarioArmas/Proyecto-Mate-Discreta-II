@@ -4,9 +4,106 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>User</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
 </head>
+
+
 <body>
-    <script src="user.js"></script>
+    <nav class="flex user">
+        <h1>User page</h1>
+        <ul class="flex">
+            <li><button onclick="location.href='index.html'">Home</button></li>
+            <li><button class="tablink current_page" onclick="openPage('myPlaces', this)" id="defaultOpen">Mis sitios</button></li>
+            <li><button class="tablink" onclick="openPage('shortestRoad', this)">Ruta más corta</button></li>
+            <li><button class="tablink" onclick="openPage('betterRoad', this)">Ruta sugerida</button></li>
+            <li><button class="tablink" onclick="openPage('stats', this)">Información adicional</button></li>
+        </ul>
+    </nav>
+
+
+    <main>
+        <div class="container user_page">
+            <!-- Listado de sitios a visitar -->
+            <div id="myPlaces" class="tabcontent">
+                <h2>Mis sitios</h2>
+                <output>Output sitios turisticos</output>
+                <input type="text" placeholder="Sitio turístico">
+                <button class="btn">Agregar sitio</button>
+                <button class="btn">Eliminar sitio</button>
+            </div>
+    
+            <!-- obtener ruta mas corta -->
+            <div id="shortestRoad" class="tabcontent">
+                <h2>Ruta mas corta</h2>
+                <output>Output ruta</output>
+                <button class="btn">Mostrar ruta más corta</button>
+            </div>
+            
+            <!-- ruta sugerida -->
+            <div id="betterRoad" class="tabcontent">
+                <h2>Ruta sugerida</h2>
+                <output>Output ruta</output>
+                <button class="btn">Mostrar ruta sugerida</button>
+            </div>
+            
+            <!-- km recorridos y tiempo aprox -->
+            <div id="stats" class="tabcontent">
+                <h2>Km reocrridos</h2>
+                <p>//Pendiente el si utilizar esta tab o no porque puede ser más práctico colocar los km y el tiempo para cada tab en específico</p>
+                <p>Total de kilometros</p>
+                <output>Kilometros del recorrido</output>
+                <button class="btn">Mostrar km totales</button>
+                <p>Tiempo estimado</p>
+                <output>Tiempo aproximado</output>
+                <button class="btn">Mostrar tiempo aproximado</button>
+            </div>
+
+            <div id="map"></div>
+            <input class="hide" type="text" id="latitud" value="14.5947755">
+            <input class="hide" type="text" id="longitud" value="-90.485321">
+        </div>
+    </main>
+
+
+    <footer>
+        <div class="datos flex">
+            <div class="person">
+                <p class="name">Mario Armas</p>
+                <p class="name">1093721</p>
+            </div>
+            <div class="person">
+                <p class="name">Dulce García</p>
+                <p class="name">1244621</p>
+            </div>
+            <div class="person">
+                <p class="name">Luis Peralta</p>
+                <p class="name">1231721</p>
+            </div>
+            <div class="person">
+                <p class="name">Daniel Cabrera</p>
+                <p class="name">1117121</p>
+            </div>
+            <div class="person">
+                <p class="name">Cristian Villela</p>
+                <p class="name">1072621</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Frontend -->
+    <script src="./scripts/frontend/full_page_tabs.js"></script>
+
+    <!-- Google maps api -->
+    <script src="./scripts/map.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=showMap"></script>
+    
+    <!-- Backend -->
+    <script src="./scripts/user.js"></script>
 </body>
 </html>
