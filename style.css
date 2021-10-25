@@ -150,7 +150,7 @@ FORM LOGINS
     color: #e60073;
     padding: 1em 3.5em;
     border-radius: 50px;
-    margin: 4em;
+    margin: 3em;
 }
 
 .login button:hover,
@@ -172,6 +172,16 @@ FORM LOGINS
 .close:focus{
     color: #e60073;
 }
+
+/* error message */
+.error_message{
+    display: none;
+    color: #e60073;
+    padding: 1em 0 0 3em;
+    text-align: left;
+    width: 100%;
+}
+
 
 /* ==========
 LAYOUT
