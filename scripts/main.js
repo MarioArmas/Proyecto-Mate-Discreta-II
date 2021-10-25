@@ -7,20 +7,20 @@ function signInAdmin() {
     var confirmPassword = document.getElementById('signInAdminConfirmPassword').value;
     var error_btn = document.getElementById('error_message_signin_admin');
 
-    error_btn.innerHTML = ""
-    error_btn.style.display = "none"
+    error_btn.innerHTML = "";
+    error_btn.style.display = "none";
 
     // evitar campos en blanco
     if (name == "" || password == "" || confirmPassword == "") {
         error_btn.innerHTML = "Hacen falta campos por completar";
-        error_btn.style.display = 'block'
+        error_btn.style.display = 'block';
         return;
     }
     
     // contraseña y confirmar contraseña iguales
     if (password != confirmPassword) {
         error_btn.innerHTML = "La contraseña no coincide";
-        error_btn.style.display = 'block'
+        error_btn.style.display = 'block';
         return;
     }
 
@@ -37,7 +37,7 @@ function signInAdmin() {
             // verificar que sea un admin nuevo
             if (items.length > 0) {
                 error_btn.innerHTML = "Ese nombre de usuario ya está seleccionado";
-                error_btn.style.display = 'block'
+                error_btn.style.display = 'block';
                 return;
             }
 
@@ -116,14 +116,14 @@ function signInUser() {
     // evitar campos en blanco
     if (name == "" || password == "" || confirmPassword == "") {
         error_btn.innerHTML = "Hacen falta campos por completar";
-        error_btn.style.display = 'block'
+        error_btn.style.display = 'block';
         return;
     }
     
     // contraseña y confirmar contraseña iguales
     if (password != confirmPassword) {
         error_btn.innerHTML = "La contraseña no coincide";
-        error_btn.style.display = 'block'
+        error_btn.style.display = 'block';
         return;
     }
 
@@ -144,7 +144,7 @@ function signInUser() {
             // verificar que sea un user nuevo
             if (items.length > 0) {
                 error_btn.innerHTML = "Ese nombre de usuario ya está seleccionado";
-                error_btn.style.display = 'block'
+                error_btn.style.display = 'block';
                 return;
             }
 

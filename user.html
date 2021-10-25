@@ -32,24 +32,26 @@
             <!-- Listado de sitios a visitar -->
             <div id="myPlaces" class="tabcontent">
                 <h2>Mis sitios</h2>
-                <output>Output sitios turisticos</output>
-                <input type="text" placeholder="Sitio turístico">
-                <button class="btn">Agregar sitio</button>
-                <button class="btn">Eliminar sitio</button>
+                <p id="mis_sitios_text">Output sitios turisticos</p>
+                <input type="text" placeholder="Sitio turístico" id="place_name">
+                <button class="btn" onclick="agregarSitio()">Agregar sitio</button>
+                <button class="btn" onclick="eliminarSitio()">Eliminar sitio</button>
             </div>
     
             <!-- obtener ruta mas corta -->
             <div id="shortestRoad" class="tabcontent">
                 <h2>Ruta mas corta</h2>
-                <output>Output ruta</output>
-                <button class="btn">Mostrar ruta más corta</button>
+                <input type="text" id="lugar_origen_short" placeholder="Ingrese lugar origen">
+                <input type="text" id="lugar_destino_short" placeholder="Ingrese lugar destino">
+                <p id="shortest_road_text">Output ruta</p>
+                <button class="btn" onclick="shortestRoad()">Mostrar ruta más corta</button>
             </div>
             
             <!-- ruta sugerida -->
             <div id="betterRoad" class="tabcontent">
                 <h2>Ruta sugerida</h2>
-                <output>Output ruta</output>
-                <button class="btn">Mostrar ruta sugerida</button>
+                <p id="best_road_text">Output ruta</p>
+                <button class="btn" onclick="bestRoad()">Mostrar ruta sugerida</button>
             </div>
             
             <!-- km recorridos y tiempo aprox -->
@@ -58,10 +60,10 @@
                 <p>//Pendiente el si utilizar esta tab o no porque puede ser más práctico colocar los km y el tiempo para cada tab en específico</p>
                 <p>Total de kilometros</p>
                 <output>Kilometros del recorrido</output>
-                <button class="btn">Mostrar km totales</button>
+                <button class="btn" onclick="kmTiempo()">Mostrar km totales</button>
                 <p>Tiempo estimado</p>
                 <output>Tiempo aproximado</output>
-                <button class="btn">Mostrar tiempo aproximado</button>
+                <button class="btn" onclick="kmTiempo()">Mostrar tiempo aproximado</button>
             </div>
 
             <div id="map"></div>
@@ -119,6 +121,6 @@
     </script>
     
     <!-- Backend -->
-    <script src="./scripts/user.js"></script>
+    <script src="./scripts/app_user.js"></script>
 </body>
 </html>

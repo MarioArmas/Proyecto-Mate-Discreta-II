@@ -40,6 +40,7 @@
                 <input type="text" id="latitud" placeholder="Latitud" value="14.5947755">
                 <input type="text" id="longitud" placeholder="Longitud" value="-90.485321">
                 <input type="text" id="nombre_sitio" placeholder="Nombre del turístico">
+                <button onclick="ingresarSitio()">Ingresar sitio</button>
             </div>
 
             <!-- ingresar carreteras -->
@@ -47,7 +48,7 @@
                 <h2>Ingresar carretera</h2>
                 <input type="text" id="new_road_origen" placeholder="Ingrese carretera origen">
                 <input type="text" id="new_road_destino" placeholder="Ingrese carretera destino">
-                <button>Ingresar nueva carretera</button>
+                <button onclick="ingresarCarretera()">Ingresar nueva carretera</button>
             </div>
 
             <!-- alertas de carreteras dañadas -->
@@ -55,7 +56,7 @@
                 <h2>Ingresar alerta de carretera dañada o inhabilitada</h2>
                 <input type="text" id="damage_road_origen" placeholder="Ingrese carretera origen">
                 <input type="text" id="damage_road_destino" placeholder="Ingrese carretera destino">
-                <button>Ingresar alerta de carretera dañada</button>
+                <button onclick="alertaCarretera()">Ingresar alerta de carretera dañada</button>
             </div>
 
             <!-- crear usuarios -->
@@ -76,13 +77,15 @@
             <div id="removeSite" class="tabcontent">
                 <h2>Deshabilitar sitio turístico</h2>
                 <input type="text" id="site_disabled" placeholder="Ingrese sitio">
-                <button>Deshabilitar sitio turístico</button>
+                <button onclick="deshabilitarSitio()">Deshabilitar sitio turístico</button>
+                <button onclick="habilitarSitio()">Habilitar sitio turístico</button>
             </div>
 
             <!-- mostrar estadisticas -->
             <div id="showStats" class="tabcontent">
                 <h2>Estadísticas</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae, laboriosam fugiat cum similique expedita saepe perferendis quo omnis aut. Autem ipsum, id magnam nostrum unde dolorum maiores quas blanditiis perferendis!</p>
+                <p id="estadisticas">stats</p>
+                <button onclick="showStats()">Actualizar estadísticas</button>
             </div>
         </div>
     </main>
@@ -136,5 +139,6 @@
 
     <!-- Backend -->
     <script src="./scripts/main.js"></script>
+    <script src="./scripts/app_admin.js"></script>
 </body>
 </html>
