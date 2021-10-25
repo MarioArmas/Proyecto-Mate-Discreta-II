@@ -103,6 +103,8 @@ function logInAdmin() {
 
 // USERS
 function signInUser() {
+    // fix bug
+    // it reloads the page when click on sign in a user
     var name =  document.getElementById('signInUserName').value;
     var password =  document.getElementById('signInUserPassword').value;
     var confirmPassword =  document.getElementById('signInUserConfirmPassword').value;
