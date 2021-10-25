@@ -63,12 +63,11 @@
                 <form class="modal_content" action="">
                     <div class="login">
                         <p class="login_title">Registrar Usuario</p>
-                        <!-- <p>Usuario:</p> -->
-                        <input type=text placeholder="User" name=usuariou>
-                        <!-- <p>Contraseña:</p> -->
-                        <input type=password placeholder="Password" name=passwordu>
-                        <input type=password placeholder="Confirm password" name=passwordu>
-                        <button>Sign In</button>
+                        <input id="signInUserName" type=text placeholder="User" autocomplete="off">
+                        <input id="signInUserPassword" type=password placeholder="Password" autocomplete="off">
+                        <input id="signInUserConfirmPassword" type=password placeholder="Confirm password" autocomplete="off">
+                        <p id="error_message_signin_user" class="error_message"></p>
+                        <button onclick="signInUser()">Sign In</button>
                     </div>
                 </form>
             </div>
@@ -114,11 +113,28 @@
     </footer>
 
     <!-- Frontend -->
-    <script src="./scripts/frontend/modal_form.js"></script>
     <script src="./scripts/frontend/full_page_tabs.js"></script>
     
     <!-- Google maps api -->
     <script src="./scripts/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=showMap"></script>
+
+    <!-- Database -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script> 
+    <script>
+      const firebaseApp = firebase.initializeApp({ 
+        apiKey: "AIzaSyAo-y2kBPLtaH8TK6yGETuVBh9BWz1z9pE",
+        authDomain: "discretaiiproyecto.firebaseapp.com",
+        projectId: "discretaiiproyecto",
+        storageBucket: "discretaiiproyecto.appspot.com",
+        messagingSenderId: "401703141604",
+        appId: "1:401703141604:web:5d61becc6d04f8e2baacf1"
+       });
+    </script>
+
+    <!-- Backend -->
+    <script src="./scripts/main.js"></script>
 </body>
 </html>
