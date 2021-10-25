@@ -4,32 +4,121 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrador</title>
+    <title>Admin</title>
     <link rel="stylesheet" href="style.css">
-    
+
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
 </head>
 
 
 <body>
-    <nav>
-        
+    <nav class="flex admin">
+        <h1>ADMIN PANEL</h1>
+        <ul class="flex">
+            <li><button onclick="location.href='index.html'">Home</button></li>
+            <li><button class="tablink current_page" onclick="openPage('addSite', this)" id="defaultOpen">Agregar sitios</button></li>
+            <li><button class="tablink" onclick="openPage('addRoad', this)">Ingresar carreteras</button></li>
+            <li><button class="tablink" onclick="openPage('alertRoad', this)">Ingresar alerta</button></li>
+            <li><button class="tablink" onclick="openPage('registerUser', this)">Sign In User</button></li>
+            <li><button class="tablink" onclick="openPage('removeSite', this)">Deshabilitar</button></li>
+            <li><button class="tablink" onclick="openPage('showStats', this)">Estadísticas</button></li>
+        </ul>
     </nav>
-    <header>
-        
-    </header>
+
+
     <main>
         <div class="container">
-            <input type="text" id="latitud" value="14.5947755">
-            <input type="text" id="longitud" value="-90.485321">
+            <!-- ingresar sitios -->
+            <div id="addSite" class="tabcontent">
+                <h2>Agregar sitio turístico</h2>
 
-            <div id="map"></div>
-            <script src="admin.js"></script>
-            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=showMap"></script>
+                <div id="map"></div>
+                
+                <input type="text" id="latitud" placeholder="Latitud" value="14.5947755">
+                <input type="text" id="longitud" placeholder="Longitud" value="-90.485321">
+                <input type="text" id="nombre_sitio" placeholder="Nombre del turístico">
+            </div>
+
+            <!-- ingresar carreteras -->
+            <div id="addRoad" class="tabcontent">
+                <h2>Ingresar carretera</h2>
+                <input type="text" id="new_road_origen" placeholder="Ingrese carretera origen">
+                <input type="text" id="new_road_destino" placeholder="Ingrese carretera destino">
+                <button>Ingresar nueva carretera</button>
+            </div>
+
+            <!-- alertas de carreteras dañadas -->
+            <div id="alertRoad" class="tabcontent">
+                <h2>Ingresar alerta de carretera dañada o inhabilitada</h2>
+                <input type="text" id="damage_road_origen" placeholder="Ingrese carretera origen">
+                <input type="text" id="damage_road_destino" placeholder="Ingrese carretera destino">
+                <button>Ingresar alerta de carretera dañada</button>
+            </div>
+
+            <!-- crear usuarios -->
+            <div id="registerUser" class="tabcontent">
+                <form class="modal_content" action="">
+                    <div class="login">
+                        <p class="login_title">Registrar Usuario</p>
+                        <!-- <p>Usuario:</p> -->
+                        <input type=text placeholder="User" name=usuariou>
+                        <!-- <p>Contraseña:</p> -->
+                        <input type=password placeholder="Password" name=passwordu>
+                        <input type=password placeholder="Confirm password" name=passwordu>
+                        <button>Sign In</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- sitio turistico deshabilitado -->
+            <div id="removeSite" class="tabcontent">
+                <h2>Deshabilitar sitio turístico</h2>
+                <input type="text" id="site_disabled" placeholder="Ingrese sitio">
+                <button>Deshabilitar sitio turístico</button>
+            </div>
+
+            <!-- mostrar estadisticas -->
+            <div id="showStats" class="tabcontent">
+                <h2>Estadísticas</h2>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae, laboriosam fugiat cum similique expedita saepe perferendis quo omnis aut. Autem ipsum, id magnam nostrum unde dolorum maiores quas blanditiis perferendis!</p>
+            </div>
         </div>
     </main>
     
     <footer>
-
+        <div class="datos flex">
+            <div class="person">
+                <p class="name">Mario Armas</p>
+                <p class="name">1093721</p>
+            </div>
+            <div class="person">
+                <p class="name">Dulce García</p>
+                <p class="name">1244621</p>
+            </div>
+            <div class="person">
+                <p class="name">Luis Peralta</p>
+                <p class="name">1231721</p>
+            </div>
+            <div class="person">
+                <p class="name">Daniel Cabrera</p>
+                <p class="name">1117121</p>
+            </div>
+            <div class="person">
+                <p class="name">Cristian Villela</p>
+                <p class="name">1072621</p>
+            </div>
+        </div>
     </footer>
+
+    <!-- Frontend -->
+    <script src="./scripts/frontend/modal_form.js"></script>
+    <script src="./scripts/frontend/full_page_tabs.js"></script>
+    
+    <!-- Google maps api -->
+    <script src="./scripts/map.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=showMap"></script>
 </body>
 </html>
