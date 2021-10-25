@@ -33,11 +33,10 @@
                 <span onclick="document.getElementById('form_login_user').style.display='none'" class="close" title="Close Form">&times;</span>
                 <div class="login">
                     <p class="login_title">Ingresar Usuario</p>
-                    <!-- <p>Usuario:</p> -->
-                    <input id="logInUserName" type=text placeholder="User">
-                    <!-- <p>Contraseña:</p> -->
-                    <input id="logInUserPassword" type=password placeholder="Password">
-                    <button onclick="location.href='user.html'">Log In</button>
+                    <input id="logInUserName" type=text placeholder="User" autocomplete="off">
+                    <input id="logInUserPassword" type=password placeholder="Password" autocomplete="off">
+                    <p id="error_message_login_user" class="error_message"></p>
+                    <button onclick="logInUser()">Log In</button>
                 </div>
             </div>
         </div>
@@ -48,28 +47,25 @@
                 <span onclick="document.getElementById('form_register_admin').style.display='none'" class="close" title="Close Form">&times;</span>
                 <div class="login">
                     <p class="login_title">Registrar Admin</p>
-                    <!-- <p>Usuario:</p> -->
-                    <input id="signInAdminName" type=text placeholder="User">
-                    <!-- <p>Contraseña:</p> -->
-                    <input id="signInAdminPassword" type=password placeholder="Password">
-                    <!-- <p>Contraseña:</p> -->
-                    <input id="signInAdminConfirmPassword" type=password placeholder="Confirm password">
-                    <button onclick="location.href='paginaadmin.html'">Sign In</button>
+                    <input id="signInAdminName" type=text placeholder="User" autocomplete="off">
+                    <input id="signInAdminPassword" type=password placeholder="Password" autocomplete="off">
+                    <input id="signInAdminConfirmPassword" type=password placeholder="Confirm password" autocomplete="off">
+                    <p id="error_message_signin_admin" class="error_message"></p>
+                    <button onclick="signInAdmin()">Sign In</button>
                 </div>
             </div>
         </div>
-
+        
         <div class="modal" id="form_login_admin">
             
             <div class="modal_content" action="">
                 <span onclick="document.getElementById('form_login_admin').style.display='none'" class="close" title="Close Form">&times;</span>
                 <div class="login">
                     <p class="login_title">Ingresar Admin</p>
-                    <!-- <p>Usuario:</p> -->
-                    <input id="logInAdminName" type=text placeholder="User"> 
-                    <!-- <p>Contraseña:</p> -->
-                    <input id="logInAdminPassword" type=password placeholder="Password">
-                    <button onclick="location.href='admin.html'">Log In</button>
+                    <input id="logInAdminName" type=text placeholder="User" autocomplete="off">
+                    <input id="logInAdminPassword" type=password placeholder="Password" autocomplete="off">
+                    <p id="error_message_login_admin" class="error_message"></p>
+                    <button onclick="logInAdmin()">Log In</button>
                 </div>
             </div>
         </div>
@@ -125,9 +121,13 @@
         </div>
     </footer>
 
+    <!-- Frontend -->
+    <script src="./scripts/frontend/modal_form.js"></script>
+
+    <!-- Database -->
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script>
     <script>
       const firebaseApp = firebase.initializeApp({ 
         apiKey: "AIzaSyAo-y2kBPLtaH8TK6yGETuVBh9BWz1z9pE",
@@ -137,10 +137,9 @@
         messagingSenderId: "401703141604",
         appId: "1:401703141604:web:5d61becc6d04f8e2baacf1"
        });
-
-
     </script>
-    
-    <script src="./scripts/frontend/modal_form.js"></script>
+
+    <!-- Backend -->
+    <script src="./scripts/main.js"></script>
 </body>
 </html>
