@@ -1,61 +1,55 @@
 //
-//*agregar la interacción con el usuario con la página
-//
+//*agregar la interacción con el usuario con la página 
+//y enlazar la base de datos
+//recuperado de https://firebase.google.com/docs/firestore/query-data/queries?hl=es-419#web-version-8_2
 
-//
-//writeFile reemplaza el archivo ingresado por el usuario si el archivo existe
-//Si el archivo no existe, se crea uno con el contenido que el usuario establezca (borrar, fuera de la funcionalidad)
-//https://www.w3schools.com/nodejs/nodejs_filesystem.asp
-//**Terminar de arreglar
-//
-
-
-var lugares = [];
+var visitar; //desde el html
 var estado = false;
-var fs = require('fs');
+
+
 void Verificar()
 { 
-    const { estado } = require("./Sitios");
-
-    var filePath = 'file.json';
-    fs.access(filePath, fs.constants.F_OK, accessCallback);
-    function accessCallback(error) {
-        if (error) {
-            console.log(`${filePath} does not exist`);
-        } else {
-            console.log(`${filePath} exist`);
-            estado = true;
-        }
+    var LugaresTuristicos = db.collection("Sitios");
+    var query = LugaresTuristicos.where("name", "==", visitar);
+    if(query)
+    {
+        estado = true;
     }
 }
-    
 
 void AgregarSitio()
 {
-    var posicion = 0;
-    fs.writeFile('file.json',JSON.stringify(data),function(err)
-    {
-        if(err) throw err;
-        console.log('completado');
-    });
-    Verificar();
-
-    //Interacción con el usuario
     if(estado == true)
     {
-        while(lugares[posicion]==null)
-        {
-            posición++;
-        }
-        lugares[posicion] = data;
+        //Se agrega a la base de datos el valor que está contenido en la variable sitio
+        /*
+        .get() para obtener los datos recolectados
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        // doc.data() is never undefined for query doc snapshots
+                        console.log(doc.id, " => ", doc.data());
+                    });
+                })
+                .catch((error) => {
+                    console.log("Error getting documents: ", error);
+                });
+        */
+    }
+    else
+    {
+        console.log("El sitio turístico seleccionado no existe");
     }
 }
- 
+
 void EliminarSitio()
 {
-    fs.unlink('file.json', function(err)
+    if(estado == true)
     {
-        if(err) throw err;
-        console.log('File deleted');
-    });
+        //Se elimina de la base de datos del usuario el contenido de la variable
+    }
+    else
+    {
+        console.log("Seleccione otro sitio turístico");
+    }
+    //acualización
 }
