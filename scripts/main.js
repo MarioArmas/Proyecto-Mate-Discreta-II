@@ -137,10 +137,6 @@ function signInUser() {
                 items.push(item.data());
             })
 
-            /* for (var i = 0; i < items.length; i++) {
-                console.log(items[i])
-            } */
-
             // verificar que sea un user nuevo
             if (items.length > 0) {
                 error_btn.innerHTML = "Ese nombre de usuario ya está seleccionado";
