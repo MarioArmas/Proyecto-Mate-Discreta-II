@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main page</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
+</head>
+
+
+<body>
+    <nav class="flex">
+        <h1>Proyecto Matemática Discreta</h1>
+        <ul class="flex">
+            <li><button id="button_modal1" onclick="document.getElementById('form_login_user').style.display='block'">Login user</button></li>
+            <li><button id="button_modal3" onclick="document.getElementById('form_login_admin').style.display='block'">Login admin</button></li>
+            <li><button id="button_modal2" onclick="document.getElementById('form_register_admin').style.display='block'">Sign In Admin</button></li>
+        </ul>
+    </nav>
+
+
+    <main>
+        <!-- FORMS -->
+        <div class="modal" id="form_login_user">
+            
+            <div class="modal_content" action="">
+                <span onclick="document.getElementById('form_login_user').style.display='none'" class="close" title="Close Form">&times;</span>
+                <div class="login">
+                    <p class="login_title">Ingresar Usuario</p>
+                    <input id="logInUserName" type=text placeholder="User" autocomplete="off">
+                    <input id="logInUserPassword" type=password placeholder="Password" autocomplete="off">
+                    <p id="error_message_login_user" class="error_message"></p>
+                    <button onclick="logInUser()">Log In</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="form_register_admin">
+            
+            <div class="modal_content" action="">
+                <span onclick="document.getElementById('form_register_admin').style.display='none'" class="close" title="Close Form">&times;</span>
+                <div class="login">
+                    <p class="login_title">Registrar Admin</p>
+                    <input id="signInAdminName" type=text placeholder="User" autocomplete="off">
+                    <input id="signInAdminPassword" type=password placeholder="Password" autocomplete="off">
+                    <input id="signInAdminConfirmPassword" type=password placeholder="Confirm password" autocomplete="off">
+                    <p id="error_message_signin_admin" class="error_message"></p>
+                    <button onclick="signInAdmin()">Sign In</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal" id="form_login_admin">
+            
+            <div class="modal_content" action="">
+                <span onclick="document.getElementById('form_login_admin').style.display='none'" class="close" title="Close Form">&times;</span>
+                <div class="login">
+                    <p class="login_title">Ingresar Admin</p>
+                    <input id="logInAdminName" type=text placeholder="User" autocomplete="off">
+                    <input id="logInAdminPassword" type=password placeholder="Password" autocomplete="off">
+                    <p id="error_message_login_admin" class="error_message"></p>
+                    <button onclick="logInAdmin()">Log In</button>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- MAIN PAGE -->
+        <div class="container">
+            <article>
+                <h2>Title</h2>
+                <br>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio fuga dignissimos error quasi. Aspernatur labore temporibus molestiae facilis ipsam incidunt, praesentium autem totam excepturi vel, consequatur aperiam? Maiores delectus corrupti nesciunt odit sunt. Sunt, cupiditate molestias illum tempora quod quae, distinctio commodi quis iste nobis voluptatibus aut veniam ullam beatae eos expedita velit, reiciendis nemo provident omnis et? Obcaecati ipsam eum aut ex sint quia nisi, sapiente quae eos ut perspiciatis corporis, voluptatibus aliquid est mollitia quam fuga nobis? Placeat est beatae alias minima quibusdam eveniet, vel possimus magni perferendis laudantium modi, fugit similique non! Saepe, consectetur cupiditate unde, exercitationem voluptates odit iusto qui iste temporibus rerum atque asperiores eveniet beatae hic cumque vel repudiandae quibusdam earum quidem, nisi mollitia eum. Voluptatem nobis aliquid, officia asperiores tenetur itaque distinctio rem, maiores eligendi qui nihil doloribus commodi recusandae dolor minus quis est quas iure. Libero ab, voluptatem iste repudiandae commodi et veritatis fuga possimus adipisci, dicta unde, at quos error hic aut nisi sequi dolor reprehenderit aspernatur sunt eaque? Vitae libero deserunt rerum beatae dolorum deleniti reiciendis porro nisi quisquam maiores voluptate sapiente nesciunt eum, maxime aliquid iusto modi temporibus repellat eius dolorem. Consectetur debitis quidem quasi eligendi eveniet pariatur delectus.
+                </p>
+            </article>
+            <article>
+                <h2>Title</h2>
+                <br>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio fuga dignissimos error quasi. Aspernatur labore temporibus molestiae facilis ipsam incidunt, praesentium autem totam excepturi vel, consequatur aperiam? Maiores delectus corrupti nesciunt odit sunt. Sunt, cupiditate molestias illum tempora quod quae, distinctio commodi quis iste nobis voluptatibus aut veniam ullam beatae eos expedita velit, reiciendis nemo provident omnis et? Obcaecati ipsam eum aut ex sint quia nisi, sapiente quae eos ut perspiciatis corporis, voluptatibus aliquid est mollitia quam fuga nobis? Placeat est beatae alias minima quibusdam eveniet, vel possimus magni perferendis laudantium modi, fugit similique non! Saepe, consectetur cupiditate unde, exercitationem voluptates odit iusto qui iste temporibus rerum atque asperiores eveniet beatae hic cumque vel repudiandae quibusdam earum quidem, nisi mollitia eum. Voluptatem nobis aliquid, officia asperiores tenetur itaque distinctio rem, maiores eligendi qui nihil doloribus commodi recusandae dolor minus quis est quas iure. Libero ab, voluptatem iste repudiandae commodi et veritatis fuga possimus adipisci, dicta unde, at quos error hic aut nisi sequi dolor reprehenderit aspernatur sunt eaque? Vitae libero deserunt rerum beatae dolorum deleniti reiciendis porro nisi quisquam maiores voluptate sapiente nesciunt eum, maxime aliquid iusto modi temporibus repellat eius dolorem. Consectetur debitis quidem quasi eligendi eveniet pariatur delectus.
+                </p>
+            </article>
+            <article>
+                <h2>Title</h2>
+                <br>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio fuga dignissimos error quasi. Aspernatur labore temporibus molestiae facilis ipsam incidunt, praesentium autem totam excepturi vel, consequatur aperiam? Maiores delectus corrupti nesciunt odit sunt. Sunt, cupiditate molestias illum tempora quod quae, distinctio commodi quis iste nobis voluptatibus aut veniam ullam beatae eos expedita velit, reiciendis nemo provident omnis et? Obcaecati ipsam eum aut ex sint quia nisi, sapiente quae eos ut perspiciatis corporis, voluptatibus aliquid est mollitia quam fuga nobis? Placeat est beatae alias minima quibusdam eveniet, vel possimus magni perferendis laudantium modi, fugit similique non! Saepe, consectetur cupiditate unde, exercitationem voluptates odit iusto qui iste temporibus rerum atque asperiores eveniet beatae hic cumque vel repudiandae quibusdam earum quidem, nisi mollitia eum. Voluptatem nobis aliquid, officia asperiores tenetur itaque distinctio rem, maiores eligendi qui nihil doloribus commodi recusandae dolor minus quis est quas iure. Libero ab, voluptatem iste repudiandae commodi et veritatis fuga possimus adipisci, dicta unde, at quos error hic aut nisi sequi dolor reprehenderit aspernatur sunt eaque? Vitae libero deserunt rerum beatae dolorum deleniti reiciendis porro nisi quisquam maiores voluptate sapiente nesciunt eum, maxime aliquid iusto modi temporibus repellat eius dolorem. Consectetur debitis quidem quasi eligendi eveniet pariatur delectus.
+                </p>
+            </article>
+        </div>
+    </main>
+
+
+    <footer>
+        <div class="datos flex">
+            <div class="person">
+                <p class="name">Mario Armas</p>
+                <p class="name">1093721</p>
+            </div>
+            <div class="person">
+                <p class="name">Dulce García</p>
+                <p class="name">1244621</p>
+            </div>
+            <div class="person">
+                <p class="name">Luis Peralta</p>
+                <p class="name">1231721</p>
+            </div>
+            <div class="person">
+                <p class="name">Daniel Cabrera</p>
+                <p class="name">1117121</p>
+            </div>
+            <div class="person">
+                <p class="name">Cristian Villela</p>
+                <p class="name">1072621</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Frontend -->
+    <script src="./scripts/frontend/modal_form.js"></script>
+
+    <!-- Database -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script>
+    <script>
+      const firebaseApp = firebase.initializeApp({ 
+        apiKey: "AIzaSyAo-y2kBPLtaH8TK6yGETuVBh9BWz1z9pE",
+        authDomain: "discretaiiproyecto.firebaseapp.com",
+        projectId: "discretaiiproyecto",
+        storageBucket: "discretaiiproyecto.appspot.com",
+        messagingSenderId: "401703141604",
+        appId: "1:401703141604:web:5d61becc6d04f8e2baacf1"
+       });
+    </script>
+
+    <!-- Backend -->
+    <script src="./scripts/main.js"></script>
+</body>
+</html>
