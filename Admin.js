@@ -1,28 +1,47 @@
 function ingresarSitio() {
     // validar que no hayan sitios repetidos
-    // añadir sitio a la base de datos con TODAS sus variables
     var name = document.getElementById('nombre_sitio').value;
     var latitud = document.getElementById('latitud').value;
     var longitud = document.getElementById('longitud').value;
     var disponible = true;
-    var carreteras = [];
-
-        //INGRESO A BASE DE DATOS
-    db.collection("Sitios").doc().set()({
-        name = document.getElementById('nombre_sitio').value,
-        latitud = document.getElementById('latitud').value,
-        longitud = document.getElementById('longitud').value,
-        disponible = true,
-
-    });
     
+
     // verificar que no hayan campos vacios
     if (name == "" || latitud == "" || longitud == "") {
         return;
     }
 
-    // codigo
-}
+    async function getItems()
+    {
+        try {
+            var carreteras = [];
+            const response = await db.collection("Sitios").where("name", "==", name).get();
+            
+            response.forEach((item) => {
+                carreteras.push(item.data());
+            })
+
+            // verificar que sitio no esté repetido
+            if (carreteras.length > 0) {
+                error_btn.innerHTML = "Ese sitio ya ha sido seleccionado";
+                error_btn.style.display = 'block';
+                return;
+            }
+
+           //INGRESO A BASE DE DATOS CON TODAS LAS VARIABLES
+        db.collection("Sitios").doc().set()({
+            name,
+            latitud,
+            longitud,
+            disponible,
+        })
+        }
+        catch (error) {
+            console.log("Error al ingresar sitio")
+        }
+        
+    }  
+}       
 
 function ingresarCarretera() {
     // añadir carreteras al vector del objeto "lugar" en la base de datos
