@@ -63,13 +63,13 @@ async function deshabilitarSitio() {
         var setDesHabiRef= await db.collection('persona').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
         setDesHabiRef
             .onSnapshot(snapshot=>{
-                snapshot.forEach( snaphijo=>{
+                snapshot.forEach( (snaphijo)=>{
                     Ddeshabilitar(snaphijo.id);
                 })
             })
             
     } catch (error) {
-        console.log("Error")
+        console.log("Error"+error)
         return;
         
     }
@@ -91,13 +91,13 @@ async function habilitarSitio() {
         var setHabiRef= await db.collection('persona').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
         setHabiRef
             .onSnapshot(snapshot=>{
-                snapshot.forEach( snaphijo=>{
+                snapshot.forEach( (snaphijo)=>{
                     Dhabilitar(snaphijo.id);
                 })
             })
         
     } catch (error) {
-        console.log("Error")
+        console.log("Error: "+error)
         return;     
     }
 
@@ -120,6 +120,8 @@ function Dhabilitar(id){
         .doc(id)
         .update({
             disponibilidad: true
+        }).then(() => {
+            location.reload();  //Refrescar Pantalla, Para evitar Bug de disponibilidades
         })
 }
 
@@ -129,6 +131,7 @@ function Ddeshabilitar(id){
         .doc(id)
         .update({
             disponibilidad: false
+        }).then(() => {
+            location.reload();    //Refrescar Pantalla, Para evitar Bug de disponibilidades
         })
-
 }
