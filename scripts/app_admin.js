@@ -48,7 +48,7 @@ function alertaCarretera() {
     // codigo
 }
 
-function deshabilitarSitio() {
+async function deshabilitarSitio() { 
     // verificar que el sitio exista
     // cambiar la variable bool a false en la base de datos del sitio ingresado
     var lugar = document.getElementById('site_disabled').value;
@@ -59,9 +59,24 @@ function deshabilitarSitio() {
     }
 
     // codigo
+    try {
+        var setDesHabiRef= await db.collection('persona').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
+        setDesHabiRef
+            .onSnapshot(snapshot=>{
+                snapshot.forEach( (snaphijo)=>{
+                    Ddeshabilitar(snaphijo.id);
+                })
+            })
+            
+    } catch (error) {
+        console.log("Error"+error)
+        return;
+        
+    }
+    
 }
 
-function habilitarSitio() {
+async function habilitarSitio() {
     // verificar que el sitio exista
     // cambiar la variable bool a true en la base de datos del sitio ingresado
     var lugar = document.getElementById('site_disabled').value;
@@ -72,6 +87,20 @@ function habilitarSitio() {
     }
 
     // codigo
+    try {
+        var setHabiRef= await db.collection('persona').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
+        setHabiRef
+            .onSnapshot(snapshot=>{
+                snapshot.forEach( (snaphijo)=>{
+                    Dhabilitar(snaphijo.id);
+                })
+            })
+        
+    } catch (error) {
+        console.log("Error: "+error)
+        return;     
+    }
+
 }
 
 function showStats() {
@@ -83,4 +112,26 @@ function showStats() {
 
     // añadir datos al html
     etiqueta_html.innerHTML = texto_estadisticas;
+}
+
+function Dhabilitar(id){
+    const setEstadoRef=db.collection('persona'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
+    setEstadoRef
+        .doc(id)
+        .update({
+            disponibilidad: true
+        }).then(() => {
+            location.reload();  //Refrescar Pantalla, Para evitar Bug de disponibilidades
+        })
+}
+
+function Ddeshabilitar(id){
+    const setEstadoRef=db.collection('persona'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
+    setEstadoRef
+        .doc(id)
+        .update({
+            disponibilidad: false
+        }).then(() => {
+            location.reload();    //Refrescar Pantalla, Para evitar Bug de disponibilidades
+        })
 }

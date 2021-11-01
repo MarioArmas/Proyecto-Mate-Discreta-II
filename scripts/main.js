@@ -190,7 +190,8 @@ function logInUser() {
                 
                 var user = items[i];
                 if (user["name"] == name & user["password"] == password) {
-                    console.log("works")
+                    console.log("works"),
+                    setCurrentuser(name),
                     window.open("user.html");
                     return;
                 }
@@ -206,4 +207,13 @@ function logInUser() {
         }
     }
     getItems()
+}
+function setCurrentuser(setname){     
+    const currentUserRef=db.collection('current_user');
+    currentUserRef
+        .doc('Cu9QBfm1MJuY6liYrQGM')     //única ID de la collection
+        .update({
+            name:setname           
+        })
+    
 }
