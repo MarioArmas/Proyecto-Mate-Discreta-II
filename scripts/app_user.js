@@ -1,6 +1,7 @@
 // IMPORTANTE
 // En la base de datos debe haber un colection con el "current user" del cual se deben gestionar los datos ya que ese seria el usuario actual
 
+const db = firebase.firestore();
 
 function agregarSitio() {
     // añadir sitios al vector del objeto "user" en la base de datos
@@ -8,11 +9,63 @@ function agregarSitio() {
     // validar que hayan datos en los campos (frontend)
     // validar que no hayan repetidos
     var name_place = document.getElementById('place_name').value;
+    var id = 'XOdGSQLC3oZ5jMZHpqzs';
+    var error_btn = document.getElementById('error_message_agregarsitio_user');
 
     // validar que no hayan campos vacios
     if (name_place == "") {
+        error_btn.innerHTML = "Debe agregar el nombre de un sitio";
+        error_btn.style.display = 'block';
         return;
     }
+
+    async function Leer()
+    {
+        var places = []
+        var users = []
+        //colección de sitios en admin (aún no existe)
+        const datos = await db.collection("sitios").where("place", "==", name_place).get();
+
+        var name = db.collection("current_user").where("name").get();
+        const user = await db.collection("persona").where("name", "==", name).get();
+        
+        datos.forEach((doc) => {
+            places.push(doc.data());
+        })
+        user.forEach((doc)=> {
+            users.push(doc.data());
+        })
+
+        //comprueba que el lugar exista, luego comprueba que el current dentro de la colección para insertar los elementos en ese espacio
+        for(var i = 0; i < places.length; i++)
+        {
+            var query = places[i];
+            if(query["place"] == name_place)
+            {
+                for(var j = 0; j <users.length; j++)
+                {
+                    var nombre = users[i];
+                    if(nombre["name"] == name)
+                    {
+                        function setPlace(name_place){
+                            const PlaceRef=db.collection('persona');
+                            PlaceRef
+                                .doc(id)
+                                .update({
+                                    place: name_place           
+                                })
+                        }
+                        setPlace()
+                    }
+                }
+            }
+            else
+            {
+                error_btn.innerHTML = "No existe este sitio";
+            }
+        }
+    }
+    Leer()
 }
 
 function elminiarSitio() {
