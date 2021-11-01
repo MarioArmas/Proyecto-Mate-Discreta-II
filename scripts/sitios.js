@@ -1,55 +1,77 @@
-//
-//*agregar la interacción con el usuario con la página 
-//y enlazar la base de datos
 //recuperado de https://firebase.google.com/docs/firestore/query-data/queries?hl=es-419#web-version-8_2
 
-var visitar; //desde el html
+const db = firebase.firestore();
+
+var id = 'XOdGSQLC3oZ5jMZHpqzs';
 var estado = false;
+var setplace = document.getElementById('place_name').value
+var error = document.getElementById('error_message_agregarsitio_user');
 
-
-void Verificar()
-{ 
-    var LugaresTuristicos = db.collection("Sitios");
-    var query = LugaresTuristicos.where("name", "==", visitar);
-    if(query)
+function agregarSitio()
+{
+    if(setplace == "")
     {
-        estado = true;
+        error.innerHTML = "Debe agregar el nombre de un sitio";
+        return;
     }
+
+    //Para comprobar los datos dentro de la base de datos
+
+    async function Leer()
+    {
+        var places = []
+        var users = []
+        //colección de sitios en admin (aún no existe)
+        const datos = await db.collection("sitios").where("place", "==", setplace).get();
+
+        var name = db.collection("current_user").where("name").get();
+        const user = await db.collection("persona").where("name", "==", name).get();
+        
+        datos.forEach((doc) => {
+            places.push(doc.data());
+        })
+        user.forEach((doc)=> {
+            users.push(doc.data());
+        })
+
+        for(var i = 0; i < places.length; i++)
+        {
+            var query = places[i];
+            if(query["place"] == setplace)
+            {
+                for(var j = 0; j <users.length; j++)
+                {
+                    var nombre = users[i];
+                    if(nombre["name"] == name)
+                    {
+                        function setPlace(setplace){
+                            const PlaceRef=db.collection('persona');
+                            PlaceRef
+                                .doc(id)
+                                .update({
+                                    place: setplace           
+                                })
+                        }
+                        setPlace()
+                    }
+                }
+            }
+            else
+            {
+                error.innerHTML = "No existe este sitio";
+            }
+        }
+    }
+
+    Leer()
 }
 
-void AgregarSitio()
+//Obtiene los datos de los lugares en la base de datos
+function eliminarSitio(id)
 {
-    if(estado == true)
-    {
-        //Se agrega a la base de datos el valor que está contenido en la variable sitio
-        /*
-        .get() para obtener los datos recolectados
-                .then((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                        // doc.data() is never undefined for query doc snapshots
-                        console.log(doc.id, " => ", doc.data());
-                    });
-                })
-                .catch((error) => {
-                    console.log("Error getting documents: ", error);
-                });
-        */
-    }
-    else
-    {
-        console.log("El sitio turístico seleccionado no existe");
-    }
-}
-
-void EliminarSitio()
-{
-    if(estado == true)
-    {
-        //Se elimina de la base de datos del usuario el contenido de la variable
-    }
-    else
-    {
-        console.log("Seleccione otro sitio turístico");
-    }
-    //acualización
+    db.collection("persona").doc(id).then(function(){
+        console.log("Document deleted!");
+    }).catch(function(error){
+        console.error("error", error);
+    })
 }
