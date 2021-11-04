@@ -118,17 +118,49 @@ function elminiarSitio() {
     Leer()
 }
 
-function mostrarSitios() {
-    // obtener vector con los sitios del usuario
-    // mostrar sitios en un string
+async function mostrar(){
+
     var etiqueta_html = document.getElementById('mis_sitios_text');
-    var texto_vector = "";
+    var texto_vector = "No tiene sitios";
+    
 
     // codigo
-
-    // añadir datos al html
-    etiqueta_html.innerHTML = texto_vector;
-}
+   //recorremos la columna de current
+    var currref =    db.collection('current_user')
+    .onSnapshot(query =>{
+    
+        query.forEach(doc =>{
+            console.log(doc.data()) //sacamos los datos de la columna
+//recorremos la columna de persona 
+            var personaref =    db.collection('persona')
+            .onSnapshot(quer =>{    
+                quer.forEach(docp =>{
+                    console.log(docp.data())
+                    //buscamos el nombre del current en el de persona
+                    if (doc.data().name === docp.data().name)
+                    {
+                        if (docp.data().places == ""){//verificamos si tiene sitios agregados
+                            etiqueta_html.innerHTML = "No tiene sitios";
+            return;
+                        }
+                        else
+                        {
+                            //mostramos los sitios
+                        etiqueta_html.innerHTML = docp.data().places;
+                        return; 
+                        }
+                    }
+                    
+                })
+            });
+            
+        })
+    });
+            
+   
+    
+}    
+  
 
 function shortestRoad () {
     // buscar ruta mas corta entre los puntos dados por el usuario
