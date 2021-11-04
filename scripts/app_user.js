@@ -118,7 +118,7 @@ function elminiarSitio() {
     Leer()
 }
 
-async function mostrar(){
+async function mostrarSitios(){
 
     var etiqueta_html = document.getElementById('mis_sitios_text');
     var texto_vector = "No tiene sitios";
@@ -197,3 +197,6 @@ function kmTiempo() {
     // calcular distancia total y tiempo recorrido
     // pendiente añadir al frontend
 }
+
+
+mostrarSitios();
