@@ -14,55 +14,42 @@ function agregarSitio() {
 
     // validar que no hayan campos vacios
     if (name_place == "") {
-        //error_btn.innerHTML = "Debe agregar el nombre de un sitio";
-        //error_btn.style.display = 'block';
-        //Falta agregar un <p></p> en user.html
+        error_btn.innerHTML = "Debe agregar el nombre de un sitio";
+        error_btn.style.display = 'block';
         return;
     }
 
     async function Leer()
     {
         var places = []
-        var users = []
+        //var users = []
 
         //colección de sitios en admin (aún no existe)
         const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
-        var name = db.collection("current_user").where("name").get();
-        const user = await db.collection("persona").where("name", "==", name).get();
 
         //Obteniendo todos los datos de la colección
         datos.forEach((item) => {
             places.push(item.data());
         })
+
+        /* 
         user.forEach((item)=> {
             users.push(item.data());
         })
+        */
 
-        //comprueba que el lugar exista, luego comprueba el current user dentro de la colección para insertar los elementos en ese espacio
+        //comprueba que el lugar exista en la colección de sitios (inexistente en admin) e ingresa el elemento dentro del array en una nueva posición
         for(var i = 0; i < places.length; i++)
         {
             var site = places[i];
             if(site["name"] == name_place)
             {
-                places.push(name_place)
-                for(var j = 0; j <users.length; j++)
-                {
-                    var nombre = users[i];
-                    if(nombre["name"] == name)
-                    {
-                        function setPlace(places = [])
-                        {
-                            const PlaceRef=db.collection('persona');
-                            PlaceRef
-                                .doc(id)
-                                .update({
-                                    place: places 
-                                          
-                                })
-                        }
-                        setPlace()
-                    }
-                }
+                const personaRef = db.collection('persona');
+                personaRef
+                .doc(id)
+                .update({
+                    places : firebase.firestore.FieldValue.arrayUnion(name_place)
+                })
             }
             else
             {
@@ -78,7 +65,7 @@ function elminiarSitio() {
     // eliminar el sitio del vector de sitios del objeto "user" en la base de datos si es que existe
 
     var name_place = document.getElementById('place_name').value;
-    var personaRef = db.collection("persona").doc("XOdGSQLC3oZ5jMZHpqzs");
+    var id = 'XOdGSQLC3oZ5jMZHpqzs';
 
     // validar que no hayan campos vacios
 
@@ -105,8 +92,14 @@ function elminiarSitio() {
             var site = places[i];
             if(site["name"] == name_place)
             {
-                personaRef.update({
-                    "place" : FieldValue.arrayRemove(name_place)
+                console.log(site["name"])
+                console.log(name_place)
+
+                const personaRef = db.collection('persona');
+                personaRef
+                .doc(id)
+                .update({
+                    places : firebase.firestore.FieldValue.arrayRemove(name_place)
                 })
             }
             else
