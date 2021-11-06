@@ -38,7 +38,7 @@ async function alertaCarretera() {
     // el modo en que lo vamos a hacer es añadiendo un "!" antes del nombre de la carretera
     var carretera_origen = document.getElementById('damage_road_origen').value;
     var carretera_destino = document.getElementById('damage_road_destino').value;
-    var mostrara = document.getElementById('Carreteradañad');
+    var mostrara = document.getElementById('Carreteradañada');
     var carretera=[];                   //arreglo donde se busca en la matriz
 if (carretera_origen == "")//verificamos que los campos no esten vacios
 {
