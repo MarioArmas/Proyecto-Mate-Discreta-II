@@ -26,9 +26,47 @@ function ingresarCarretera() {
     // validar que no hayan campos vacios
     if (carretera_origen == "" || carretera_destino == "") {
         return;
+    }else if(carretera_origen == carretera_destino){
+        console.warn('Same-Value');
+        return;
     }
 
     // codigo
+    // CAMBIAR A CAMPOS REALES , SITIOS .. NOMBRES ETC...
+    //Agregar sobre su disponibiidad si su Disponibilidad es False , decir que no
+    var ruteOrigenRef= db.collection('persona').where("name","==",carretera_origen);   //Cambiar Campos a Sitio
+    var ruteDestinoRef= db.collection('persona').where("name","==",carretera_destino);
+    var IdRutaOrigen;
+    var ToFOrigen,ToFDestino;
+
+
+    //TryCatch de Origen
+    try {
+        ruteOrigenRef
+            .onSnapshot(snapshot1 =>{
+                snapshot1.forEach((snaphijo1)=>{
+                    IdRutaOrigen=snaphijo1.id
+                    ToFOrigen=snaphijo1.data().disponibilidad;
+                    ruteDestinoRef
+                        .onSnapshot(snapshot2=>{
+                            snapshot2.forEach((snaphijo2)=>{
+                                ToFDestino=snaphijo2.data().disponibilidad;
+                                if(ToFDestino && ToFOrigen ==true){
+                                    AddCarretera(IdRutaOrigen,carretera_destino)
+
+                                }
+
+                            })
+                        })
+                })
+            })
+        
+    } catch (error) {       //Enviar mensaje que la ruta origen no existe
+        return;
+    }
+    //TryCatch de Destino
+
+
 }
 
 function alertaCarretera() {
@@ -133,5 +171,16 @@ function Ddeshabilitar(id){
             disponibilidad: false
         }).then(() => {
             location.reload();    //Refrescar Pantalla, Para evitar Bug de disponibilidades
+        })
+}
+
+function AddCarretera(id,DestinoValue){
+    const setCarreteraRef=db.collection('persona'); //Cambiar A SITIOS
+    setCarreteraRef
+        .doc(id)
+        .update({
+            places: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
+        }).then(()=>{
+            location.reload();
         })
 }
