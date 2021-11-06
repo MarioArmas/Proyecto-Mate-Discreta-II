@@ -30,7 +30,6 @@ function ingresarCarretera() {
 
     // codigo
 }
-
 async function alertaCarretera() {
     // añadir alerta a carreteras
     // verificar que exista el lugar en la base de datos
@@ -39,7 +38,7 @@ async function alertaCarretera() {
     // el modo en que lo vamos a hacer es añadiendo un "!" antes del nombre de la carretera
     var carretera_origen = document.getElementById('damage_road_origen').value;
     var carretera_destino = document.getElementById('damage_road_destino').value;
-    var mostrara = document.getElementById('Carreteradañada');
+    var mostrara = document.getElementById('Carreteradañad');
     var carretera=[];                   //arreglo donde se busca en la matriz
 if (carretera_origen == "")//verificamos que los campos no esten vacios
 {
@@ -60,7 +59,7 @@ try
                 {
                     Carreteradañada(doc.id,carretera_destino);  //mandamos los datos para la funcion
                    
-                    mostrara.innerHTML = "La alerta fue añadida con exito"
+                    mostrara.innerHTML = "La alerta fue añadida con exito "
                     
                    
                     
@@ -100,7 +99,7 @@ function Carreteradañada(id,destino){//borramos la carretera para despues actua
          .update({
              places: firebase.firestore.FieldValue.arrayUnion(cambio)//agregamos una carretera ya con la alerta
     })     
-}
+ }
 async function deshabilitarSitio() { 
     // verificar que el sitio exista
     // cambiar la variable bool a false en la base de datos del sitio ingresado
