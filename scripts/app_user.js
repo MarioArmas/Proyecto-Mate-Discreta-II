@@ -1,6 +1,3 @@
-// IMPORTANTE
-// En la base de datos debe haber un colection con el "current user" del cual se deben gestionar los datos ya que ese seria el usuario actual
-
 const db = firebase.firestore();
 
 function agregarSitio() {
