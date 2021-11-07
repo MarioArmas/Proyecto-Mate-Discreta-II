@@ -42,24 +42,21 @@ function ingresarCarretera() {
 
     //TryCatch de Origen
     try {
-        ruteOrigenRef
-            .onSnapshot(snapshot1 =>{
-                snapshot1.forEach((snaphijo1)=>{
-                    IdRutaOrigen=snaphijo1.id
-                    ToFOrigen=snaphijo1.data().disponibilidad;
-                    ruteDestinoRef
-                        .onSnapshot(snapshot2=>{
-                            snapshot2.forEach((snaphijo2)=>{
-                                ToFDestino=snaphijo2.data().disponibilidad;
-                                if(ToFDestino && ToFOrigen ==true){
-                                    AddCarretera(IdRutaOrigen,carretera_destino)
-
-                                }
-
-                            })
-                        })
+        ruteOrigenRef.onSnapshot(snapshot1 => {
+            snapshot1.forEach((snaphijo1) => {
+                IdRutaOrigen=snaphijo1.id
+                ToFOrigen=snaphijo1.data().disponibilidad;
+                
+                ruteDestinoRef.onSnapshot(snapshot2 => {
+                    snapshot2.forEach((snaphijo2) => {
+                        ToFDestino=snaphijo2.data().disponibilidad;
+                        if(ToFDestino && ToFOrigen ==true){
+                            AddCarretera(IdRutaOrigen,carretera_destino)
+                        }
+                    })
                 })
             })
+        })
         
     } catch (error) {       //Enviar mensaje que la ruta origen no existe
         return;

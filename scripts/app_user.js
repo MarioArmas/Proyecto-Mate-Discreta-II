@@ -88,8 +88,7 @@ function elminiarSitio() {
         //Falta agregar un bloque de texto para mostrar el error
     }
 
-    async function Leer()
-    {
+    async function Leer() {
         var places = []
         //colección de sitios en admin (aún no existe)
         const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
@@ -100,17 +99,14 @@ function elminiarSitio() {
         })
 
         //Comprobar que el elemento exista
-        for(var i = 0; i < places.length; i++)
-        {
+        for(var i = 0; i < places.length; i++) {
             var site = places[i];
-            if(site["name"] == name_place)
-            {
+            if(site["name"] == name_place) {
                 personaRef.update({
                     "place" : FieldValue.arrayRemove(name_place)
                 })
             }
-            else
-            {
+            else {
                 error_btn.innerHTML = "No existe este sitio";
             }
         }
@@ -124,26 +120,24 @@ async function mostrarSitios(){
 
     // codigo
    //recorremos la columna de current
-    var currref =    db.collection('current_user').onSnapshot(query =>{
-        query.forEach(doc =>{
+    var currref = db.collection('current_user').onSnapshot(query =>{
+        query.forEach(doc => {
             console.log(doc.data()) //sacamos los datos de la columna
             //recorremos la columna de persona 
-            var personaref =    db.collection('persona')
-            .onSnapshot(quer =>{    
+            var personaref = db.collection('persona')
+            .onSnapshot(quer =>{
                 quer.forEach(docp =>{
                     console.log(docp.data())
                     //buscamos el nombre del current en el de persona
-                    if (doc.data().name === docp.data().name)
-                    {
-                        if (docp.data().places == ""){//verificamos si tiene sitios agregados
+                    if (doc.data().name === docp.data().name) {
+                        if (docp.data().places == "") {//verificamos si tiene sitios agregados
                             etiqueta_html.innerHTML = "No tiene sitios";
                             return;
                         }
-                        else
-                        {
+                        else {
                             //mostramos los sitios
-                        etiqueta_html.innerHTML = docp.data().places;
-                        return; 
+                            etiqueta_html.innerHTML = docp.data().places;
+                            return; 
                         }
                     }
                 })
