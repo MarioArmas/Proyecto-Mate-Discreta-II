@@ -1,117 +1,146 @@
-// IMPORTANTE
-// En la base de datos debe haber un colection con el "current user" del cual se deben gestionar los datos ya que ese seria el usuario actual
-
 const db = firebase.firestore();
 
 function agregarSitio() {
-    // añadir sitios al vector del objeto "user" en la base de datos
-    // al vector de le irán añadiendo el nombre del sitio (todo minúscula y separado con espacios)
-    // validar que hayan datos en los campos (frontend)
-    // validar que no hayan repetidos
+    
     var name_place = document.getElementById('place_name').value;
-    var error_btn = document.getElementById('error_message_agregarsitio_user');
-    var id = 'XOdGSQLC3oZ5jMZHpqzs';
 
     // validar que no hayan campos vacios
     if (name_place == "") {
-        //error_btn.innerHTML = "Debe agregar el nombre de un sitio";
-        //error_btn.style.display = 'block';
-        //Falta agregar un <p></p> en user.html
+        error_btn.innerHTML = "Debe agregar el nombre de un sitio";
+        error_btn.style.display = 'block';
         return;
     }
 
     async function Leer()
     {
-        var places = []
         var users = []
-
-        //colección de sitios en admin (aún no existe)
-        const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
-        var name = db.collection("current_user").where("name").get();
-        const user = await db.collection("persona").where("name", "==", name).get();
-
-        //Obteniendo todos los datos de la colección
-        datos.forEach((item) => {
-            places.push(item.data());
-        })
-        user.forEach((item)=> {
+        const currentuser = await db.collection("current_user").get();
+    
+        currentuser.forEach((item) =>{
             users.push(item.data());
         })
-
-        //comprueba que el lugar exista, luego comprueba el current user dentro de la colección para insertar los elementos en ese espacio
-        for(var i = 0; i < places.length; i++)
-        {
-            var site = places[i];
-            if(site["name"] == name_place)
-            {
-                places.push(name_place)
-                for(var j = 0; j <users.length; j++)
-                {
-                    var nombre = users[i];
-                    if(nombre["name"] == name)
-                    {
-                        function setPlace(places = [])
-                        {
-                            const PlaceRef=db.collection('persona');
-                            PlaceRef
-                                .doc(id)
-                                .update({
-                                    place: places 
-                                          
-                                })
-                        }
-                        setPlace()
-                    }
-                }
-            }
-            else
-            {
-                error_btn.innerHTML = "No existe este sitio";
-            }
-        }
+        var valor = users[0];
+        console.log(valor["name"])
+    
+        var NewUserRef = await db.collection('persona').where("name", "==", valor["name"])
+        NewUserRef
+        .onSnapshot(snapshot=>{
+            snapshot.forEach( (snaphijo)=>{
+            agregarSite(snaphijo.id);
+            })
+        })
     }
     Leer()
 }
 
-function elminiarSitio() {
-    // verificar que no hayan campos vacios
-    // eliminar el sitio del vector de sitios del objeto "user" en la base de datos si es que existe
-
+function eliminarSitio() {
     var name_place = document.getElementById('place_name').value;
-    var personaRef = db.collection("persona").doc("XOdGSQLC3oZ5jMZHpqzs");
 
     // validar que no hayan campos vacios
-
 
     if (name_place == "") {
         return;
         //Falta agregar un bloque de texto para mostrar el error
     }
 
-    async function Leer() {
-        var places = []
-        //colección de sitios en admin (aún no existe)
-        const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
-
-        //Obteniendo todos los datos de la colección
-        datos.forEach((item) => {
-            places.push(item.data());
+    async function Leer()
+    {
+        var users = []
+        const currentuser = await db.collection("current_user").get();
+    
+        currentuser.forEach((item) =>{
+            users.push(item.data());
         })
-
-        //Comprobar que el elemento exista
-        for(var i = 0; i < places.length; i++) {
-            var site = places[i];
-            if(site["name"] == name_place) {
-                personaRef.update({
-                    "place" : FieldValue.arrayRemove(name_place)
-                })
-            }
-            else {
-                error_btn.innerHTML = "No existe este sitio";
-            }
-        }
+        var valor = users[0];
+        console.log(valor["name"])
+    
+        var NewUserRef = await db.collection('persona').where("name", "==", valor["name"])
+        NewUserRef
+        .onSnapshot(snapshot=>{
+            snapshot.forEach( (snaphijo)=>{
+            borrarSite(snaphijo.id);
+            })
+        })
     }
     Leer()
+}
+
+async function borrarSite(id)
+{
+    var name_place = document.getElementById('place_name').value;
+    
+    var places = []
+
+    //colección de sitios en admin (aún no existe), mientras tanto se utiliza la provisional de SitiosTT (test)
+    const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
+
+    //Obteniendo todos los datos de la colección
+    datos.forEach((item) => {
+        places.push(item.data());
+    })
+
+    //Comprobar que el elemento exista
+    for(var i = 0; i < places.length; i++)
+    {
+        var site = places[i];
+        if(site["name"] == name_place)
+        {
+            //console.log(site["name"])
+            //console.log(name_place)
+
+            const personaRef = db.collection('persona');
+            personaRef
+            .doc(id)
+            .update({
+                places : firebase.firestore.FieldValue.arrayRemove(name_place)
+            }).then(() => {
+                location.reload();
+            })
+        }
+        else
+        {
+            error_btn.innerHTML = "No existe este sitio";
+        }
+    }
+}
+
+async function agregarSite(id)
+{
+    var name_place = document.getElementById('place_name').value;
+    
+    var places = []
+
+    //colección de sitios en admin (aún no existe), mientras tanto se utiliza la provisional de SitiosTT (test)
+    const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
+
+    //Obteniendo todos los datos de la colección
+    datos.forEach((item) => {
+        places.push(item.data());
+    })
+
+    //Comprobar que el elemento exista
+    for(var i = 0; i < places.length; i++)
+    {
+        var site = places[i];
+        if(site["name"] == name_place)
+        {
+            //console.log(site["name"])
+            //console.log(name_place)
+
+            const personaRef = db.collection('persona');
+            personaRef
+            .doc(id)
+            .update({
+                places : firebase.firestore.FieldValue.arrayUnion(name_place)
+            }).then(() => {
+                location.reload();
+            })
+        }
+        else
+        {
+            error_btn.innerHTML = "No existe este sitio";
+        }
+    }
 }
 
 async function mostrarSitios(){
