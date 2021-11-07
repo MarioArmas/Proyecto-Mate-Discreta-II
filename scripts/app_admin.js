@@ -1,18 +1,51 @@
 function ingresarSitio() {
-    // validar que no hayan sitios repetidos
+   // validar que no hayan sitios repetidos
     // añadir sitio a la base de datos con TODAS sus variables
     var name = document.getElementById('nombre_sitio').value;
     var latitud = document.getElementById('latitud').value;
     var longitud = document.getElementById('longitud').value;
     var disponible = true;
     var carreteras = []
-    
+
     // verificar que no hayan campos vacios
     if (name == "" || latitud == "" || longitud == "") {
         return;
     }
+    
+    async function Add()
+    {
+        var sitios = [];
 
-    // codigo
+        // validar que no hayan sitios repetidos
+        const data = await db.collection("sitios").where("name", "==", name).get(); 
+
+        // obtener cada dato
+        data.forEach((item) => {
+            sitios.push(item.data());
+        })
+
+        for (var i = 0; i < sitios.length; i++)
+        {
+            var x = site[i];
+            if(x["name"] == name_place)
+            {
+                alert("Sitio ya existe");
+                console.log ("Sitio ya existe");
+                i = sitios.length;  //romper ciclo for
+            }
+            else
+            {
+                db.collection("sitios").doc().set()({   //Si el sitio no existe en la colección, entonces se agrega a la base de datos
+                    name,
+                    latitud,
+                    longitud,
+                    disponible,
+                })
+            }
+        }
+        
+    }
+    Add();
 }
 
 function ingresarCarretera() {
