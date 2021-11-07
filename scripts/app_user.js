@@ -37,13 +37,9 @@ function agregarSitio() {
 }
 
 function eliminarSitio() {
-    // verificar que no hayan campos vacios
-    // eliminar el sitio del vector de sitios del objeto "user" en la base de datos si es que existe
     var name_place = document.getElementById('place_name').value;
-    var id = 'XOdGSQLC3oZ5jMZHpqzs';
 
     // validar que no hayan campos vacios
-
 
     if (name_place == "") {
         return;
