@@ -68,8 +68,7 @@ function ingresarCarretera() {
 
 
 }
-
-function alertaCarretera() {
+async function alertaCarretera() {
     // añadir alerta a carreteras
     // verificar que exista el lugar en la base de datos
     // verificar que exista la carretera en la base de datos
@@ -77,15 +76,68 @@ function alertaCarretera() {
     // el modo en que lo vamos a hacer es añadiendo un "!" antes del nombre de la carretera
     var carretera_origen = document.getElementById('damage_road_origen').value;
     var carretera_destino = document.getElementById('damage_road_destino').value;
-
-    // validar que no hayan campos vacios
-    if (carretera_origen == "" || carretera_destino == "") {
-        return;
-    }
+    var mostrara = document.getElementById('Carreteradañada');
+    var carretera=[];                   //arreglo donde se busca en la matriz
+if (carretera_origen == "")//verificamos que los campos no esten vacios
+{
+    console.log("No ingreso datos")
+    mostrara.innerHTML = "La Carreterea de origen no se encuentra en la base de datos"
+    return;
+}
+try
+{
+    const sitiosref = await db.collection("TestSitios") //buscamos en una base de datos TEST ya que Aun no esta creada la verdadera CAMBIAR
+    const queryy = sitiosref.where('name', '==', carretera_origen); //Buscamos en la coleccion del nombre de origen
+    queryy.get().then(snapshot => {
+        snapshot.docs.forEach(doc => {  
+            carretera = doc.data().places;   //obtenemos el valor de la matriz en el arreglo
+            for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
+            {
+                if (carretera[i]==carretera_destino)//verificamos que la carretera exista en la base de datos
+                {
+                    Carreteradañada(doc.id,carretera_destino);  //mandamos los datos para la funcion
+                   
+                    mostrara.innerHTML = "La alerta fue añadida con exito "
+                    
+                   
+                    
+                }
+                else if(carretera[i]!=carretera_destino)
+                {
+                    
+                }
+             
+            }
+                
+         })     
+    })
+}
+   catch{
+       console.log("Error")
+   }
 
     // codigo
 }
+function Carreteradañada(id,destino){//borramos la carretera para despues actualizarla con la alerta
+    var alerta = "!"+ destino;
+     
+    const test = db.collection('TestSitios');
+    test
+    .doc(id)
+        .update({
+             places: firebase.firestore.FieldValue.arrayRemove(destino)//borramos la carretera de destino 
+    })
+    updatecarretera(id,alerta);//le damos los datos a la funcion de atualizar
 
+}
+ function updatecarretera(id,cambio){ // actualizamos la base de datos con la alerta
+    const testt = db.collection('TestSitios');
+    testt
+    .doc(id)
+         .update({
+             places: firebase.firestore.FieldValue.arrayUnion(cambio)//agregamos una carretera ya con la alerta
+    })     
+ }
 async function deshabilitarSitio() { 
     // verificar que el sitio exista
     // cambiar la variable bool a false en la base de datos del sitio ingresado
