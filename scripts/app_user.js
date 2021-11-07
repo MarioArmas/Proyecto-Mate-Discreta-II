@@ -14,42 +14,55 @@ function agregarSitio() {
 
     // validar que no hayan campos vacios
     if (name_place == "") {
-        error_btn.innerHTML = "Debe agregar el nombre de un sitio";
-        error_btn.style.display = 'block';
+        //error_btn.innerHTML = "Debe agregar el nombre de un sitio";
+        //error_btn.style.display = 'block';
+        //Falta agregar un <p></p> en user.html
         return;
     }
 
     async function Leer()
     {
         var places = []
-        //var users = []
+        var users = []
 
         //colección de sitios en admin (aún no existe)
         const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
+        var name = db.collection("current_user").where("name").get();
+        const user = await db.collection("persona").where("name", "==", name).get();
 
         //Obteniendo todos los datos de la colección
         datos.forEach((item) => {
             places.push(item.data());
         })
-
-        /* 
         user.forEach((item)=> {
             users.push(item.data());
         })
-        */
 
-        //comprueba que el lugar exista en la colección de sitios (inexistente en admin) e ingresa el elemento dentro del array en una nueva posición
+        //comprueba que el lugar exista, luego comprueba el current user dentro de la colección para insertar los elementos en ese espacio
         for(var i = 0; i < places.length; i++)
         {
             var site = places[i];
             if(site["name"] == name_place)
             {
-                const personaRef = db.collection('persona');
-                personaRef
-                .doc(id)
-                .update({
-                    places : firebase.firestore.FieldValue.arrayUnion(name_place)
-                })
+                places.push(name_place)
+                for(var j = 0; j <users.length; j++)
+                {
+                    var nombre = users[i];
+                    if(nombre["name"] == name)
+                    {
+                        function setPlace(places = [])
+                        {
+                            const PlaceRef=db.collection('persona');
+                            PlaceRef
+                                .doc(id)
+                                .update({
+                                    place: places 
+                                          
+                                })
+                        }
+                        setPlace()
+                    }
+                }
             }
             else
             {
@@ -65,7 +78,7 @@ function elminiarSitio() {
     // eliminar el sitio del vector de sitios del objeto "user" en la base de datos si es que existe
 
     var name_place = document.getElementById('place_name').value;
-    var id = 'XOdGSQLC3oZ5jMZHpqzs';
+    var personaRef = db.collection("persona").doc("XOdGSQLC3oZ5jMZHpqzs");
 
     // validar que no hayan campos vacios
 
@@ -92,14 +105,8 @@ function elminiarSitio() {
             var site = places[i];
             if(site["name"] == name_place)
             {
-                console.log(site["name"])
-                console.log(name_place)
-
-                const personaRef = db.collection('persona');
-                personaRef
-                .doc(id)
-                .update({
-                    places : firebase.firestore.FieldValue.arrayRemove(name_place)
+                personaRef.update({
+                    "place" : FieldValue.arrayRemove(name_place)
                 })
             }
             else
@@ -112,19 +119,15 @@ function elminiarSitio() {
 }
 
 async function mostrarSitios(){
-
     var etiqueta_html = document.getElementById('mis_sitios_text');
     var texto_vector = "No tiene sitios";
-    
 
     // codigo
    //recorremos la columna de current
-    var currref =    db.collection('current_user')
-    .onSnapshot(query =>{
-    
+    var currref =    db.collection('current_user').onSnapshot(query =>{
         query.forEach(doc =>{
             console.log(doc.data()) //sacamos los datos de la columna
-//recorremos la columna de persona 
+            //recorremos la columna de persona 
             var personaref =    db.collection('persona')
             .onSnapshot(quer =>{    
                 quer.forEach(docp =>{
@@ -134,7 +137,7 @@ async function mostrarSitios(){
                     {
                         if (docp.data().places == ""){//verificamos si tiene sitios agregados
                             etiqueta_html.innerHTML = "No tiene sitios";
-            return;
+                            return;
                         }
                         else
                         {
@@ -143,19 +146,14 @@ async function mostrarSitios(){
                         return; 
                         }
                     }
-                    
                 })
             });
-            
         })
-    });
-            
-   
-    
+    }); 
 }    
   
 
-function shortestRoad () {
+/* function shortestRoad () {
     // buscar ruta mas corta entre los puntos dados por el usuario
     // validar que no hayan campos vacios (frontend)
     // mostrar ruta
@@ -172,7 +170,7 @@ function shortestRoad () {
 
     // añadir datos al html
     etiqueta_html.innerHTML = ruta_corta;
-}
+} */
 
 function bestRoad () {
     // buscar la ruta mas corta de manera automática
