@@ -10,35 +10,35 @@ function shortestRoad() {
         return;
     }
 
-    var sitios_user = []
     var sitios_user_names = []
-    const data = collectData()
-    console.log(data)
-    // array with names of the places
-    sitios_user_names = data[0]
-    // array with data from the places (objects)
-    sitios_data = data[1]
+    var sitios_user = []
+    var sitios_data = []
+    var count = 0
+    collectData().forEach((item = []) => {
+        if (count == 0) sitios_user_names.push(item)
+        if (count == 1) sitios_data.push(item)
+        count += 1
+    })
 
-    console.log(data[0] + ", " + data[1])
-
+    // PENDIENTE REVISAR EL COLLECT DATA Y QUE SE AGREGUEN BIEN LOS DATOS AL SITIOS_USER (EL ERROR PUEDE SER POR SER ASYNC)
     // PENDIENTE validar que el usuario tenga agregados los sitios y que existan en la base de datos
     // es posible omitir que los tenga agregados mientras estos estén en la base de datos
 
     // create array being index 0 the starting place and last index the end place
     // add first item
-    sitios_user_names.forEach((item) => {
-        if (item == lugar_origen) {
-            sitios_user.append(item) 
-        }
-    })
+    sitios_user.push(lugar_origen)
     // add items
-    sitios_user_names.forEach((item) => {
-        if (item == lugar_origen && item != lugar_destino) {
-            sitios_user.push(item) 
+    for (var i = 0; i < sitios_user_names[0].length; i++) {
+        console.log(sitios_user_names[i])
+        if (sitios_user_names[i] != lugar_origen & sitios_user_names[i] != lugar_destino) {
+            sitios_user.push(sitios_user_names[i])
         }
-    })
+    }
+    sitios_user.push("sitioTest2")
     // add last item
     sitios_user.push(lugar_destino)
+
+    console.log(sitios_user)
 
     // crear matrices vacias
     matrix_adyacencia = []
@@ -71,7 +71,7 @@ function shortestRoad() {
     etiqueta_html.innerHTML = ruta_corta + ", " + distancia;
 }
 
-async function collectData() {
+function collectData() {
     var sitios_user = []
     var sitios_objects = []
 
@@ -79,7 +79,6 @@ async function collectData() {
         try {
             // get current user name
             const responseCurrentUser = await db.collection("current_user").where("name", "==", "123").get()
-            console.log(responseCurrentUser)
             
             var response_name = []
             responseCurrentUser.forEach((item) => {
@@ -118,19 +117,21 @@ async function collectData() {
                     sitios_objects.push(item.data())
                 })
             }
-
-            return await [sitios_user, sitios_objects];
         }
         catch (error) {
             console.log("error getting items")
         }
     }
+
+    console.log(sitios_user)
+    console.log(sitios_objects)
+    return [sitios_user, sitios_objects];
 }
 
 function roadExists(sitios_data, sitio_origen, sitio_destino) {
     sitios_data.forEach((item) => {
         if (item["name"] == sitio_origen) {
-            item["places"].forEach((road) => {
+            item["roads"].forEach((road) => {
                 if (road == sitio_destino) return true;
             })
         }
@@ -140,6 +141,7 @@ function roadExists(sitios_data, sitio_origen, sitio_destino) {
 
 function makeMatrix(sitios_user, sitios_data, matrix_adyacencia, matrix_recorridos) {
     // matriz de adyacencia
+    console.log(sitios_data)
     for (var row = 0; row < matrix_adyacencia.length; row++) {
         for (var column = 0; column < matrix_adyacencia; column++) {
             var sitio_origen = sitios_user[row];
@@ -180,8 +182,11 @@ function makeMatrix(sitios_user, sitios_data, matrix_adyacencia, matrix_recorrid
 }
 
 function readResults(sitios_user, matrix_adyacencia, matrix_recorridos) {
-    const distancia = matrix_adyacencia[0][matrix_adyacencia.length]
+    const distancia = matrix_adyacencia[0][matrix_adyacencia.length - 1]
     var recorrido = []
+
+    console.log(matrix_adyacencia)
+    console.log(matrix_recorridos)
 
     // read data from algorithm results
     var num = matrix_recorridos.length;
@@ -193,8 +198,8 @@ function readResults(sitios_user, matrix_adyacencia, matrix_recorridos) {
     recorrido.push(0)
 
     // invertir array
-    var recorrido_data
-    for (var i = recorrido.length - 1; i >= 0; i++) {
+    var recorrido_data = []
+    for (var i = recorrido.length - 1; i >= 0; i--) {
         recorrido_data.push(recorrido[i])
     }
 
