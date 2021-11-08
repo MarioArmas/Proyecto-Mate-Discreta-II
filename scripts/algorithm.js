@@ -1,5 +1,5 @@
 // const db = firebase.firestore();
-function shortestRoad() {
+async function shortestRoad() {
     var lugar_origen = document.getElementById('lugar_origen_short').value;
     var lugar_destino = document.getElementById('lugar_destino_short').value;
     var etiqueta_html = document.getElementById('shortest_road_text');
@@ -13,55 +13,48 @@ function shortestRoad() {
     var sitios_user_names = []
     var sitios_user = []
     var sitios_data = []
-    var count = 0
-    collectData().forEach((item = []) => {
-        if (count == 0) sitios_user_names.push(item)
-        if (count == 1) sitios_data.push(item)
-        count += 1
-    })
+    const data = await collectData()
+    sitios_user_names = data[0]
+    sitios_data = data[1]
 
-    // PENDIENTE REVISAR EL COLLECT DATA Y QUE SE AGREGUEN BIEN LOS DATOS AL SITIOS_USER (EL ERROR PUEDE SER POR SER ASYNC)
-    // PENDIENTE validar que el usuario tenga agregados los sitios y que existan en la base de datos
-    // es posible omitir que los tenga agregados mientras estos estén en la base de datos
+    // PENDIENTE validar que se utilicen caminos que pasen unicamente por los lugares del usuario
+
+    // validar que el usuario tenga añadidos los sitios
+    var isLugarOrigenInUser = false
+    var isLugarDestinoInUser = false
+    for (var i = 0; i < sitios_data.length; i++) {
+        if (lugar_origen == sitios_data[i]) isLugarOrigenInUser = true
+        if (lugar_destino == sitios_data[i]) isLugarDestinoInUser = true
+    }
+    // the user does not have the places added yet
+    if (!isLugarOrigenInUser || !isLugarDestinoInUser) {
+        return
+    }
 
     // create array being index 0 the starting place and last index the end place
     // add first item
     sitios_user.push(lugar_origen)
     // add items
-    for (var i = 0; i < sitios_user_names[0].length; i++) {
-        console.log(sitios_user_names[i])
+    for (var i = 0; i < sitios_user_names.length; i++) {
         if (sitios_user_names[i] != lugar_origen & sitios_user_names[i] != lugar_destino) {
             sitios_user.push(sitios_user_names[i])
         }
     }
-    sitios_user.push("sitioTest2")
     // add last item
     sitios_user.push(lugar_destino)
 
-    console.log(sitios_user)
-
-    // crear matrices vacias
-    matrix_adyacencia = []
-    matrix_recorridos = []
-    for (var i = 0; i < sitios_user.length; i++) {
-        var arr = [];
-        for (var j = 0; j < sitios_user.length; j++) {
-            arr.push(null);
-        }
-        matrix_adyacencia.push(arr);
-        matrix_recorridos.push(arr);
-    }
-
-    // llenar matrices
-    makeMatrix(sitios_user, sitios_data, matrix_adyacencia, matrix_recorridos)
+    // make matrix
+    const matrices = makeMatrix(sitios_user, sitios_data)
+    var matrix_adyacencia = matrices[0]
+    var matrix_recorridos = matrices[1]
 
     // algorithm
-    var matrices = algorithm(matrix_adyacencia, matrix_recorridos);
-    matrix_adyacencia = matrices[0]
-    matrix_recorridos = matrices[1]
+    const matrix_results = algorithm(matrix_adyacencia, matrix_recorridos);
+    matrix_adyacencia = matrix_results[0]
+    matrix_recorridos = matrix_results[1]
 
     // read results
-    var results = readResults(sitios_user, matrix_adyacencia, matrix_recorridos)
+    const results = readResults(sitios_user, matrix_adyacencia, matrix_recorridos)
     // array with shortest road in order
     ruta_corta = results[0]
     // distance from start point to end point
@@ -71,7 +64,7 @@ function shortestRoad() {
     etiqueta_html.innerHTML = ruta_corta + ", " + distancia;
 }
 
-function collectData() {
+async function collectData() {
     var sitios_user = []
     var sitios_objects = []
 
@@ -99,20 +92,19 @@ function collectData() {
                 sitios_user.push(sitio)
             })
 
-            getPlacesData()
         }
         catch (error) {
             console.log("error getting items" + error)
         }
     }
-    getData()
-
+    await getData()
+    
     async function getPlacesData() {
         try {
             // find the places from the user in database and make an array with those objects
             for (var i = 0; i < sitios_user.length; i++) {
                 const response = await db.collection("SitiosTT").where("name", "==", sitios_user[i]).get();
-
+                
                 response.forEach((item) => {
                     sitios_objects.push(item.data())
                 })
@@ -121,75 +113,96 @@ function collectData() {
         catch (error) {
             console.log("error getting items")
         }
-    }
+    }    
+    await getPlacesData()
 
-    console.log(sitios_user)
-    console.log(sitios_objects)
     return [sitios_user, sitios_objects];
 }
 
 function roadExists(sitios_data, sitio_origen, sitio_destino) {
+    var exists = false
     sitios_data.forEach((item) => {
         if (item["name"] == sitio_origen) {
-            item["roads"].forEach((road) => {
-                if (road == sitio_destino) return true;
-            })
+            try {
+                item["roads"].forEach((road) => {
+                    if (road == sitio_destino) {
+                        exists = true;
+                    }
+                })
+            }
+            catch (error) {
+                // do nothing
+                // this makes an error if roads are empty
+            }
         }
     })
-    return false;
+
+    return exists;
 }
 
-function makeMatrix(sitios_user, sitios_data, matrix_adyacencia, matrix_recorridos) {
+function makeMatrix(sitios_user, sitios_data) {
     // matriz de adyacencia
-    console.log(sitios_data)
-    for (var row = 0; row < matrix_adyacencia.length; row++) {
-        for (var column = 0; column < matrix_adyacencia; column++) {
-            var sitio_origen = sitios_user[row];
-            var sitio_destino = sitios_user[column];
+    var matrix_adyacencia = []
+    var matrix_recorridos = []
+    const LENGTH = sitios_user.length
+    for (var row = 0; row < LENGTH; row++) {
+        var aux_array = []
+        for (var column = 0; column < LENGTH; column++) {
+            const sitio_origen = sitios_user[row];
+            const sitio_destino = sitios_user[column];
 
-            if (row == column) matrix_adyacencia[row][column] = 0;
+            if (row == column) {
+                aux_array.push(0)
+            }
             else if (roadExists(sitios_data, sitio_origen, sitio_destino)) {
                 // get coords
                 var lat1, lng1, lat2, lng2;
                 sitios_data.forEach((sitio) => {
                     if (sitio["name"] == sitio_origen) {
-                        lat1, lng1 = sitio["coords"];
+                        lat1 = sitio["coords"][0];
+                        lng1 = sitio["coords"][1];
                     }
                     if (sitio["name"] == sitio_destino) {
-                        lat2, lng2 = sitio["coords"];
+                        lat2 = sitio["coords"][0];
+                        lng2 = sitio["coords"][1];
                     }
                 })
                 
                 // get distance between both places
-                matrix_adyacencia[row][column] = haversine(lat1, lng1, lat2, lng2);
+                aux_array.push(Math.round(haversine(lat1, lng1, lat2, lng2)))
             }
-            else matrix_adyacencia[row][column] = Infinity;
+            else {
+                aux_array.push(Infinity)
+            }
         }
+        matrix_adyacencia.push(aux_array)
     }
 
     // matriz de recorridos
-    for (var row = 0; row < matrix_recorridos.length; row++) {
-        for (var column = 0; column < matrix_recorridos.length; column++) {
+    for (var row = 0; row < LENGTH; row++) {
+        var aux_array = []
+        for (var column = 0; column < LENGTH; column++) {
             if (column == row) {
-                matrix_recorridos[row][column] = 0;
+                aux_array.push(0)
             }
             else {
-                matrix_recorridos[row][column] = column;
-                // matrix_recorridos[row][column] = String.fromCharCode(column + 97)
+                aux_array.push(column)
             }
         }
+        matrix_recorridos.push(aux_array)
     }
+
+    return [matrix_adyacencia, matrix_recorridos]
 }
 
 function readResults(sitios_user, matrix_adyacencia, matrix_recorridos) {
     const distancia = matrix_adyacencia[0][matrix_adyacencia.length - 1]
     var recorrido = []
 
-    console.log(matrix_adyacencia)
-    console.log(matrix_recorridos)
-
+    // add last place
+    recorrido.push(sitios_user.length - 1)
     // read data from algorithm results
-    var num = matrix_recorridos.length;
+    var num = sitios_user.length - 1;
     while (num != matrix_recorridos[0][num]) {
         recorrido.push(matrix_recorridos[0][num]);
         var aux = matrix_recorridos[0][num];
