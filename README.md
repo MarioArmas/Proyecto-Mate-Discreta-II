@@ -2,10 +2,14 @@
 
 ## Tecnologías utilizadas
 HTML
+
 CSS
+
 JavaScript
+
 Firebase
-API Google Maps
+
+Google Maps API
 
 ## Algoritmos utilizados
 Floyd-Warshall
