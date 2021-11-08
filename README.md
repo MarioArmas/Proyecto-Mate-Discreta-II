@@ -1,3 +1,12 @@
 # Proyecto-Mate-Discreta-II
-test se que puedes leer mis pensamientos muchacho.... ñam ñam ñam ñam ñam ñam ñam ñam ñam ñam ñam
-test de que si pude hacer esto
+
+## Tecnologías utilizadas
+HTML
+CSS
+JavaScript
+Firebase
+API Google Maps
+
+## Algoritmos utilizados
+Floyd-Warshall
+[Haversine](https://www.genbeta.com/desarrollo/como-calcular-la-distancia-entre-dos-puntos-geograficos-en-c-formula-de-haversine)
