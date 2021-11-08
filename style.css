@@ -215,15 +215,75 @@ footer .flex{
     color: #fff;
 }
 
+/* ==========
+ADMIN & USER
+========== */
+.user_page .tabcontent,
+.admin_page .tabcontent{
+    margin: 3em 0;
+}
 
+.buttons{
+    margin: 3em 0;
+}
 
+.buttons input{
+    font-size: 1rem;
+    padding: 1em 2em;
+    margin: 1.5em 0;
+    background-color: #333333;
+    display: block;
+    width: 100%;
+}
 
+.user_page p,
+.admin_page p{
+    font-size: 1.5rem;
+    margin: .3em 0;
+}
 
+.user_page #map,
+.admin_page #map{
+    margin-top: 6em;
+}
 
+/* btns */
+.btn{
+    font-size: 1rem;
+    background-color: #333333;
+    border: 2px solid #e60073;
+    color: #e60073;
+    color: #fff;
+    padding: 1em 3.5em;
+    border-radius: 50px;
+    margin: .5em 0;
+    margin-right: 3em;
+}
 
+.btn:hover,
+.btn:focus{
+    background-color: #404040;
+    opacity: .8;
+}
 
+/* ADMIN & USERS */
+@media (max-width: 560px) {
+    .buttons{
+        text-align: center;
+    }
 
+    label{
+        display: inline-block;
+        width: 100%;
+        text-align: left;
+    }
 
+    .buttons .btn{
+        display: block;
+        margin: 1em auto;
+        width: 100%;
+    }
+}
 
 /* =========
 ADMIN
@@ -254,53 +314,56 @@ ADMIN
     margin: 1.5em;
 }
 
+/* labels */
+label{
+    font-size: 1.2rem;
+}
+
+#addSite input{
+    margin-top: 0;
+}
+
+/* map */
+.admin_page #map{
+    height: 300px;
+}
 
 
+/* ADMIN */
+@media (max-width: 1260px) {
+    .admin,
+    .admin .flex{
+        flex-direction: column;
+    }
+
+    .admin button{
+        width: 100%;
+        padding: 1em;
+        border: none;
+    }
+
+    .admin h1{
+        text-align: center;
+        padding: 1em 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+}
 
 
 /* ==========
 USERS
 ========== */
-/* layout */
-.user_page .tabcontent{
-    margin: 3em 0;
-}
-
-/* btns */
+/* nav btns */
 .user button{
     padding: 1.1em 2em;
 }
 
-.btn{
-    font-size: 1rem;
-    background-color: #333333;
-    border: 2px solid #e60073;
-    color: #e60073;
-    color: #fff;
-    padding: 1em 3.5em;
-    border-radius: 50px;
-}
-
-.btn:hover,
-.btn:focus{
-    background-color: #404040;
-    opacity: .8;
-}
-
 /* inputs map */
-.hide{
+.user_page .hide{
     display: none;
 }
 
-
-
-
-
-
-
-
-
-
+/* MAIN MEDIA QUERY */
 @media (max-width: 900px) {
     /* NAVBAR */
     .flex{
@@ -336,25 +399,5 @@ USERS
     .person{
         padding: 0;
         margin: 1em;
-    }
-}
-
-/* admin */
-@media (max-width: 1260px) {
-    .admin,
-    .admin .flex{
-        flex-direction: column;
-    }
-
-    .admin button{
-        width: 100%;
-        padding: 1em;
-        border: none;
-    }
-
-    .admin h1{
-        text-align: center;
-        padding: 1em 0;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 }

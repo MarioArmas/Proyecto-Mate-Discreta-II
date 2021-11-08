@@ -30,33 +30,40 @@
 
 
     <main>
-        <div class="container">
+        <div class="container admin_page">
             <!-- ingresar sitios -->
             <div id="addSite" class="tabcontent">
                 <h2>Agregar sitio turístico</h2>
-
                 <div id="map"></div>
-                
-                <input type="text" id="latitud" placeholder="Latitud" value="14.5947755">
-                <input type="text" id="longitud" placeholder="Longitud" value="-90.485321">
-                <input type="text" id="nombre_sitio" placeholder="Nombre del turístico">
-                <button class="btn" onclick="ingresarSitio()">Ingresar sitio</button>
+                <div class="buttons">
+                    <label for="">Nombre</label>
+                    <input type="text" id="nombre_sitio" placeholder="Nombre del turístico">
+                    <label for="">Latitud</label>
+                    <input type="text" id="latitud" placeholder="Latitud" value="14.5947755">
+                    <label for="">Longitud</label>
+                    <input type="text" id="longitud" placeholder="Longitud" value="-90.485321">
+                    <button class="btn" onclick="ingresarSitio()">Ingresar sitio</button>
+                </div>
             </div>
 
             <!-- ingresar carreteras -->
             <div id="addRoad" class="tabcontent">
                 <h2>Ingresar carretera</h2>
-                <input type="text" id="new_road_origen" placeholder="Ingrese carretera origen">
-                <input type="text" id="new_road_destino" placeholder="Ingrese carretera destino">
-                <button class="btn" onclick="ingresarCarretera()">Ingresar nueva carretera</button>
+                <div class="buttons">
+                    <input type="text" id="new_road_origen" placeholder="Ingrese lugar de origen">
+                    <input type="text" id="new_road_destino" placeholder="Ingrese lugar de destino">
+                    <button class="btn" onclick="ingresarCarretera()">Ingresar nueva carretera</button>
+                </div>
             </div>
 
             <!-- alertas de carreteras dañadas -->
             <div id="alertRoad" class="tabcontent">
                 <h2>Ingresar alerta de carretera dañada o inhabilitada</h2>
-                <input type="text" id="damage_road_origen" placeholder="Ingrese carretera origen">
-                <input type="text" id="damage_road_destino" placeholder="Ingrese carretera destino">
-                <button class="btn" onclick="alertaCarretera()">Ingresar alerta de carretera dañada</button>
+                <div class="buttons">
+                    <input type="text" id="damage_road_origen" placeholder="Ingrese lugar de origen">
+                    <input type="text" id="damage_road_destino" placeholder="Ingrese lugar de destino">
+                    <button class="btn" onclick="alertaCarretera()">Ingresar alerta de carretera dañada</button>
+                </div>
             </div>
 
             <!-- crear usuarios -->
@@ -76,16 +83,20 @@
             <!-- sitio turistico deshabilitado -->
             <div id="removeSite" class="tabcontent">
                 <h2>Deshabilitar sitio turístico</h2>
-                <input type="text" id="site_disabled" placeholder="Ingrese sitio">
-                <button class="btn" onclick="deshabilitarSitio()">Deshabilitar sitio turístico</button>
-                <button class="btn" onclick="habilitarSitio()">Habilitar sitio turístico</button>
+                <div class="buttons">
+                    <input type="text" id="site_disabled" placeholder="Ingrese sitio">
+                    <button class="btn" onclick="deshabilitarSitio()">Deshabilitar sitio turístico</button>
+                    <button class="btn" onclick="habilitarSitio()">Habilitar sitio turístico</button>
+                </div>
             </div>
 
             <!-- mostrar estadisticas -->
             <div id="showStats" class="tabcontent">
                 <h2>Estadísticas</h2>
                 <p id="estadisticas">stats</p>
-                <button class="btn" onclick="showStats()">Actualizar estadísticas</button>
+                <div class="buttons">
+                    <button class="btn" onclick="showStats()">Actualizar estadísticas</button>
+                </div>
             </div>
         </div>
     </main>
