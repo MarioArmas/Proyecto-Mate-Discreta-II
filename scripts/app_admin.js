@@ -67,8 +67,8 @@ function ingresarCarretera() {
     // codigo
     // CAMBIAR A CAMPOS REALES , SITIOS .. NOMBRES ETC...
     //Agregar sobre su disponibiidad si su Disponibilidad es False , decir que no
-    var ruteOrigenRef= db.collection('persona').where("name","==",carretera_origen);   //Cambiar Campos a Sitio
-    var ruteDestinoRef= db.collection('persona').where("name","==",carretera_destino);
+    var ruteOrigenRef= db.collection('SitiosTT').where("name","==",carretera_origen);   //Cambiar Campos a Sitio
+    var ruteDestinoRef= db.collection('SitiosTT').where("name","==",carretera_destino);
     var IdRutaOrigen;
     var ToFOrigen,ToFDestino;
 
@@ -78,11 +78,11 @@ function ingresarCarretera() {
         ruteOrigenRef.onSnapshot(snapshot1 => {
             snapshot1.forEach((snaphijo1) => {
                 IdRutaOrigen=snaphijo1.id
-                ToFOrigen=snaphijo1.data().disponibilidad;
+                ToFOrigen=snaphijo1.data().disponible;
                 
                 ruteDestinoRef.onSnapshot(snapshot2 => {
                     snapshot2.forEach((snaphijo2) => {
-                        ToFDestino=snaphijo2.data().disponibilidad;
+                        ToFDestino=snaphijo2.data().disponible;
                         if(ToFDestino && ToFOrigen ==true){
                             AddCarretera(IdRutaOrigen,carretera_destino)
                         }
@@ -175,7 +175,7 @@ async function deshabilitarSitio() {
 
     // codigo
     try {
-        var setDesHabiRef= await db.collection('persona').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
+        var setDesHabiRef= await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
         setDesHabiRef
             .onSnapshot(snapshot=>{
                 snapshot.forEach( (snaphijo)=>{
@@ -202,7 +202,7 @@ async function habilitarSitio() {
 
     // codigo
     try {
-        var setHabiRef= await db.collection('persona').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
+        var setHabiRef= await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
         setHabiRef
             .onSnapshot(snapshot=>{
                 snapshot.forEach( (snaphijo)=>{
@@ -229,33 +229,33 @@ function showStats() {
 }
 
 function Dhabilitar(id){
-    const setEstadoRef=db.collection('persona'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
+    const setEstadoRef=db.collection('SitiosTT'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
     setEstadoRef
         .doc(id)
         .update({
-            disponibilidad: true
+            disponible: true
         }).then(() => {
             location.reload();  //Refrescar Pantalla, Para evitar Bug de disponibilidades
         })
 }
 
 function Ddeshabilitar(id){
-    const setEstadoRef=db.collection('persona'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
+    const setEstadoRef=db.collection('SitiosTT'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
     setEstadoRef
         .doc(id)
         .update({
-            disponibilidad: false
+            disponible: false
         }).then(() => {
             location.reload();    //Refrescar Pantalla, Para evitar Bug de disponibilidades
         })
 }
 
 function AddCarretera(id,DestinoValue){
-    const setCarreteraRef=db.collection('persona'); //Cambiar A SITIOS
+    const setCarreteraRef=db.collection('SitiosTT'); //Cambiar A SITIOS
     setCarreteraRef
         .doc(id)
         .update({
-            places: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
+            roads: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
         }).then(()=>{
             location.reload();
         })
