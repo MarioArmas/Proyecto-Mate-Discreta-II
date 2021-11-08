@@ -6,8 +6,7 @@ function agregarSitio() {
 
     // validar que no hayan campos vacios
     if (name_place == "") {
-        error_btn.innerHTML = "Debe agregar el nombre de un sitio";
-        error_btn.style.display = 'block';
+        window.alert("Debe ingresar un sitio")
         return;
     }
 
@@ -39,8 +38,8 @@ function eliminarSitio() {
     // validar que no hayan campos vacios
 
     if (name_place == "") {
+        window.alert("Debe ingresar un sitio")
         return;
-        //Falta agregar un bloque de texto para mostrar el error
     }
 
     async function Leer()
@@ -85,8 +84,6 @@ async function borrarSite(id)
         var site = places[i];
         if(site["name"] == name_place)
         {
-            //console.log(site["name"])
-            //console.log(name_place)
 
             const personaRef = db.collection('persona');
             personaRef
@@ -107,10 +104,8 @@ async function borrarSite(id)
 async function agregarSite(id)
 {
     var name_place = document.getElementById('place_name').value;
-    
     var places = []
 
-    //colección de sitios en admin (aún no existe), mientras tanto se utiliza la provisional de SitiosTT (test)
     const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
 
     //Obteniendo todos los datos de la colección
@@ -124,8 +119,6 @@ async function agregarSite(id)
         var site = places[i];
         if(site["name"] == name_place)
         {
-            //console.log(site["name"])
-            //console.log(name_place)
 
             const personaRef = db.collection('persona');
             personaRef
@@ -135,6 +128,7 @@ async function agregarSite(id)
             }).then(() => {
                 location.reload();
             })
+
         }
         else
         {
@@ -142,6 +136,7 @@ async function agregarSite(id)
         }
     }
 }
+
 
 async function mostrarSitios(){
     var etiqueta_html = document.getElementById('mis_sitios_text');
