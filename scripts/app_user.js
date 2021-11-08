@@ -6,8 +6,7 @@ function agregarSitio() {
 
     // validar que no hayan campos vacios
     if (name_place == "") {
-        error_btn.innerHTML = "Debe agregar el nombre de un sitio";
-        error_btn.style.display = 'block';
+        window.alert("Debe ingresar un sitio")
         return;
     }
 
@@ -39,8 +38,8 @@ function eliminarSitio() {
     // validar que no hayan campos vacios
 
     if (name_place == "") {
+        window.alert("Debe ingresar un sitio")
         return;
-        //Falta agregar un bloque de texto para mostrar el error
     }
 
     async function Leer()
@@ -50,7 +49,6 @@ function eliminarSitio() {
     
         currentuser.forEach((item) =>{
             users.push(item.data());
-<<<<<<< HEAD
         })
         var valor = users[0];
         console.log(valor["name"])
@@ -71,31 +69,6 @@ async function borrarSite(id)
     var name_place = document.getElementById('place_name').value;
     
     var places = []
-
-=======
-        })
-        var valor = users[0];
-        console.log(valor["name"])
-    
-        var NewUserRef = await db.collection('persona').where("name", "==", valor["name"])
-        NewUserRef
-        .onSnapshot(snapshot=>{
-            snapshot.forEach( (snaphijo)=>{
-            borrarSite(snaphijo.id);
-            })
-        })
-    }
-    Leer()
-}
-
-async function borrarSite(id)
-{
-    var name_place = document.getElementById('place_name').value;
-    
-    var places = []
-
->>>>>>> f53f5f9cd754995aaa7a8b6cdd957913cdf0b725
-    //colección de sitios en admin (aún no existe), mientras tanto se utiliza la provisional de SitiosTT (test)
     const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
 
     //Obteniendo todos los datos de la colección
@@ -109,8 +82,6 @@ async function borrarSite(id)
         var site = places[i];
         if(site["name"] == name_place)
         {
-            //console.log(site["name"])
-            //console.log(name_place)
 
             const personaRef = db.collection('persona');
             personaRef
@@ -120,12 +91,11 @@ async function borrarSite(id)
             }).then(() => {
                 location.reload();
             })
+
         }
         else
         {
             error_btn.innerHTML = "No existe este sitio";
-<<<<<<< HEAD
-=======
         }
     }
 }
@@ -133,10 +103,8 @@ async function borrarSite(id)
 async function agregarSite(id)
 {
     var name_place = document.getElementById('place_name').value;
-    
     var places = []
 
-    //colección de sitios en admin (aún no existe), mientras tanto se utiliza la provisional de SitiosTT (test)
     const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
 
     //Obteniendo todos los datos de la colección
@@ -150,8 +118,6 @@ async function agregarSite(id)
         var site = places[i];
         if(site["name"] == name_place)
         {
-            //console.log(site["name"])
-            //console.log(name_place)
 
             const personaRef = db.collection('persona');
             personaRef
@@ -161,46 +127,7 @@ async function agregarSite(id)
             }).then(() => {
                 location.reload();
             })
-        }
-        else
-        {
-            error_btn.innerHTML = "No existe este sitio";
->>>>>>> f53f5f9cd754995aaa7a8b6cdd957913cdf0b725
-        }
-    }
-}
 
-async function agregarSite(id)
-{
-    var name_place = document.getElementById('place_name').value;
-    
-    var places = []
-
-    //colección de sitios en admin (aún no existe), mientras tanto se utiliza la provisional de SitiosTT (test)
-    const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
-
-    //Obteniendo todos los datos de la colección
-    datos.forEach((item) => {
-        places.push(item.data());
-    })
-
-    //Comprobar que el elemento exista
-    for(var i = 0; i < places.length; i++)
-    {
-        var site = places[i];
-        if(site["name"] == name_place)
-        {
-            //console.log(site["name"])
-            //console.log(name_place)
-
-            const personaRef = db.collection('persona');
-            personaRef
-            .doc(id)
-            .update({
-                places : firebase.firestore.FieldValue.arrayUnion(name_place)
-            }).then(() => {
-                location.reload();
-            })
         }
         else
         {
@@ -208,6 +135,7 @@ async function agregarSite(id)
         }
     }
 }
+
 
 async function mostrarSitios(){
     var etiqueta_html = document.getElementById('mis_sitios_text');
