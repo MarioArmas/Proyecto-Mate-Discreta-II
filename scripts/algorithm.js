@@ -75,7 +75,7 @@ async function bestRoad() {
     const distancia = distances_from_roads[index]
 
     // add data to DOM
-    document.getElementById('best_road_text').innerHTML = mejor_ruta
+    document.getElementById('best_road_text').innerHTML = mejor_ruta.join(', ')
     document.getElementById('km_best').innerHTML = distancia + 'km'
 }
 
@@ -146,12 +146,12 @@ async function shortestRoad() {
 
     // validar que la distancia no sea infinito
     if (distancia == Infinity) {
-        alert("No es posible realizar un camino hacia ese destino, hacen falta carreteras")
+        alert("No es posible realizar un camino hacia ese destino")
         return
     }
 
     // show results as an array
-    document.getElementById('shortest_road_text').innerHTML = ruta_corta;
+    document.getElementById('shortest_road_text').innerHTML = ruta_corta.join(', ');
     document.getElementById('km_short').innerHTML = distancia + 'km'
 }
 
