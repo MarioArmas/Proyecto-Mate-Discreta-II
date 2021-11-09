@@ -66,9 +66,10 @@ function ingresarCarretera() {
 
     // validar que no hayan campos vacios
     if (carretera_origen == "" || carretera_destino == "") {
+        window.alert("Alerta! Campos Destino y Origen Vacíos")
         return;
     }else if(carretera_origen == carretera_destino){
-        console.warn('Same-Value');
+        window.alert("Alerta! Destino y Origen son iguales")
         return;
     }
 
@@ -93,6 +94,8 @@ function ingresarCarretera() {
                         ToFDestino=snaphijo2.data().disponible;
                         if(ToFDestino && ToFOrigen ==true){
                             AddCarretera(IdRutaOrigen,carretera_destino)
+                        }else{
+                            window.alert("Alerta! Una locación no está Disponible"); 
                         }
                     })
                 })
@@ -119,15 +122,20 @@ async function alertaCarretera() {
 
     if (carretera_origen == "")//verificamos que los campos no esten vacios
     {
+        window.alert("No ingreso sitio de origen")
         return;
     }
-
+    else if (carretera_destino == "")//verificamos que los campos no esten vacios
+    {
+        window.alert("No ingreso sitio de Destino")
+        return;
+    }
     try {
     const sitiosref = await db.collection("SitiosTT") 
     const queryy = sitiosref.where('name', '==', carretera_origen); //Buscamos en la coleccion del nombre de origen
         queryy.get().then(snapshot => {
             snapshot.docs.forEach(doc => {  
-                carretera = doc.data().places;   //obtenemos el valor de la matriz en el arreglo
+                carretera = doc.data().roads;   //obtenemos el valor de la matriz en el arreglo
                 for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
                 {
                     if (carretera[i]==carretera_destino)//verificamos que la carretera exista en la base de datos
@@ -138,14 +146,14 @@ async function alertaCarretera() {
                     }
                     else if(carretera[i]!=carretera_destino)
                     {
-                        
+                        window.alert("El Destino no se encuentra en la base de datos")
                     }
                 }
             })     
         })
     }
    catch {
-       console.log("Error")
+    window.alert("el origen no se encuentra en la base de datos")
    }
 }
 
@@ -156,7 +164,7 @@ function Carreteradañada(id,destino) {//borramos la carretera para despues actu
     test
     .doc(id)
         .update({
-             places: firebase.firestore.FieldValue.arrayRemove(destino)//borramos la carretera de destino 
+             roads: firebase.firestore.FieldValue.arrayRemove(destino)//borramos la carretera de destino 
     })
     updatecarretera(id,alerta);//le damos los datos a la funcion de atualizar
 
@@ -167,7 +175,7 @@ function updatecarretera(id,cambio) { // actualizamos la base de datos con la al
     testt
         .doc(id)
         .update({
-            places: firebase.firestore.FieldValue.arrayUnion(cambio)//agregamos una carretera ya con la alerta
+            roads: firebase.firestore.FieldValue.arrayUnion(cambio)//agregamos una carretera ya con la alerta
     })     
 }
 
@@ -178,6 +186,7 @@ async function deshabilitarSitio() {
 
     // validar que no hayan campos vacios
     if (lugar == "") {
+        window.alert("Alerta! Campo Vacío")
         return;
     }
 
@@ -205,6 +214,7 @@ async function habilitarSitio() {
     
     // validar que no hayan campos vacios
     if (lugar == "") {
+        window.alert("Alerta! Campo Vacío")
         return;
     }
 
@@ -264,7 +274,5 @@ function AddCarretera(id,DestinoValue){
         .doc(id)
         .update({
             roads: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
-        }).then(()=>{
-            location.reload();
         })
 }
