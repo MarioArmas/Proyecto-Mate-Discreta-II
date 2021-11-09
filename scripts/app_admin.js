@@ -56,13 +56,13 @@ function ingresarSitio() {
     Add();
 }
 
-function ingresarCarretera() {
+async function ingresarCarretera() {
     // añadir carreteras al vector del objeto "lugar" en la base de datos
     // validar que no hayan carreteras repetidas
     // validar que ambos vértices existan (lugares)
     // las carreteras se van a añadir colocando el nombre del lugar destino en el objeto del lugar de inicio
-    var carretera_origen = document.getElementById('new_road_origen').value;
-    var carretera_destino = document.getElementById('new_road_destino').value;
+    var carretera_origen = await document.getElementById('new_road_origen').value;
+    var carretera_destino = await document.getElementById('new_road_destino').value;
 
     // validar que no hayan campos vacios
     if (carretera_origen == "" || carretera_destino == "") {
@@ -76,10 +76,31 @@ function ingresarCarretera() {
     // codigo
     // CAMBIAR A CAMPOS REALES , SITIOS .. NOMBRES ETC...
     //Agregar sobre su disponibiidad si su Disponibilidad es False , decir que no
-    var ruteOrigenRef= db.collection('SitiosTT').where("name","==",carretera_origen);   //Cambiar Campos a Sitio
-    var ruteDestinoRef= db.collection('SitiosTT').where("name","==",carretera_destino);
+    var ruteOrigenRef= await db.collection('SitiosTT').where("name","==",carretera_origen);   //Cambiar Campos a Sitio
+    var ruteDestinoRef=await db.collection('SitiosTT').where("name","==",carretera_destino);
     var IdRutaOrigen;
     var ToFOrigen,ToFDestino;
+    var alertaValue= "!"+carretera_destino;
+    var alertaArray=[];
+    //SI EXISTE ALERTA! 
+    try {
+        const Origen2Alerta=db.collection('SitiosTT');
+        const typeQuery= Origen2Alerta.where('name','==',carretera_origen);
+            typeQuery.get().then(snapshotalerta =>{
+                snapshotalerta.docs.forEach(doc=>{
+                    alertaArray=doc.data().roads;
+                    for(var i=0;i<alertaArray.length;i++){
+                        if(alertaArray[i]==alertaValue){
+                            window.alert("Alerta! Existe una Carretera Dañada ")
+                            location.reload();
+                        }
+                    }
+                })
+            })
+        
+    } catch (error) {
+        
+    }
 
 
     //TryCatch de Origen
@@ -87,10 +108,9 @@ function ingresarCarretera() {
         ruteOrigenRef.onSnapshot(snapshot1 => {
             snapshot1.forEach((snaphijo1) => {
                 IdRutaOrigen=snaphijo1.id
-                ToFOrigen=snaphijo1.data().disponible;
-                
+                ToFOrigen=snaphijo1.data().disponible;       
                 ruteDestinoRef.onSnapshot(snapshot2 => {
-                    snapshot2.forEach((snaphijo2) => {
+                    snapshot2.forEach(async(snaphijo2) => {
                         ToFDestino=snaphijo2.data().disponible;
                         if(ToFDestino && ToFOrigen ==true){
                             AddCarretera(IdRutaOrigen,carretera_destino)
@@ -279,4 +299,5 @@ function AddCarretera(id,DestinoValue){
         .update({
             roads: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
         })
+
 }
