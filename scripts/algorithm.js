@@ -1,4 +1,84 @@
 // const db = firebase.firestore();
+async function bestRoad() {
+    const data = await collectData()
+    const sitios_user_names = data[0]
+    const sitios_data = data[1]
+
+    // validar que hayan al menos 2 sitios
+    if (sitios_user_names.length < 2) {
+        alert("No posee sitios para calcular una ruta")
+        return
+    }
+
+    // make all possible roads
+    const posibleRoads = []
+    const iterations = sitios_user_names.length
+    for (var i = 0; i < iterations; i++) {
+        for (var j = 0; j < iterations; j++) {
+            if (i == j) continue
+            const newRoad = (numStart, numEnd) => {
+                const array = []
+                // create new posible road
+                array.push(sitios_user_names[numStart])
+                for (var k = 0; k < iterations; k++) {
+                    if (k != numStart & k != numEnd) array.push(sitios_user_names[k])
+                }
+                array.push(sitios_user_names[numEnd])
+
+                // push the new road to the posible roads to evaluate
+                posibleRoads.push(array)
+            }
+            newRoad(i, j)
+        }
+    }
+
+    const matrix_adyacencias = []
+    const matrix_recorridos = []
+    // make matrix and execute algorithm for each possible road
+    for (var i = 0; i < posibleRoads.length; i++) {
+        const matrix = makeMatrix(posibleRoads[i], sitios_data)
+        const results = algorithm(matrix[0], matrix[1])
+        if (results[1] != Infinity) {
+            matrix_adyacencias.push(results[0])
+            matrix_recorridos.push(results[1])
+        }
+    }
+
+    const roads = []
+    const distances_from_roads = []
+    // get final road and distance from each possible road
+    for (var i = 0; i < matrix_adyacencias.length; i++) {
+        const readedResults = readResults(posibleRoads[i], matrix_adyacencias[i], matrix_recorridos[i])
+        if (readedResults[1] != Infinity) {
+            roads.push(readedResults[0])
+            distances_from_roads.push(readedResults[1])
+        }
+    }
+
+    // validet if there is no posible results
+    if (roads.length < 1) {
+        alert('No se ha podido calcular ninguna ruta')
+        return
+    }
+    
+    // get index from the shortest road
+    const shortestDistance = (list) => {
+        for (var i = 0; i < list.length; i++) {
+            if (list[i] == Math.min(...list)) return i
+        }
+    }
+    const index = shortestDistance(distances_from_roads)
+
+    // get array with road
+    const mejor_ruta = roads[index]
+    // get distance
+    const distancia = distances_from_roads[index]
+
+    // add data to DOM
+    document.getElementById('best_road_text').innerHTML = mejor_ruta
+    document.getElementById('km_best').innerHTML = distancia + 'km'
+}
+
 async function shortestRoad() {
     const lugar_origen = document.getElementById('lugar_origen_short').value;
     const lugar_destino = document.getElementById('lugar_destino_short').value;

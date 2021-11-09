@@ -168,44 +168,6 @@ async function mostrarSitios(){
             });
         })
     }); 
-}    
-  
-
-/* function shortestRoad () {
-    // buscar ruta mas corta entre los puntos dados por el usuario
-    // validar que no hayan campos vacios (frontend)
-    // mostrar ruta
-    var lugar_origen = document.getElementById('lugar_origen_short').value;
-    var lugar_destino = document.getElementById('lugar_destino_short').value;
-    var ruta_corta;
-
-    // validar que no hayan campos vacios
-    if (lugar_origen == "" || lugar_destino == "") {
-        return;
-    }
-
-    // codigo
-
-    // añadir datos al html
-    etiqueta_html.innerHTML = ruta_corta;
-} */
-
-function bestRoad () {
-    // buscar la ruta mas corta de manera automática
-    // mostrar la ruta
-    var etiqueta_html = document.getElementById('best_road_text');
-    var mejor_ruta;
-
-    // codigo
-
-    // añadir datos al html
-    etiqueta_html.innerHTML = mejor_ruta;
 }
-
-function kmTiempo() {
-    // calcular distancia total y tiempo recorrido
-    // pendiente añadir al frontend
-}
-
 
 mostrarSitios();
