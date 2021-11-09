@@ -1,5 +1,5 @@
 function ingresarSitio() {
-   // validar que no hayan sitios repetidos
+  // validar que no hayan sitios repetidos
     // añadir sitio a la base de datos con TODAS sus variables
     var name = document.getElementById('nombre_sitio').value;
     var latitud = document.getElementById('latitud').value;
@@ -9,40 +9,48 @@ function ingresarSitio() {
 
     // verificar que no hayan campos vacios
     if (name == "" || latitud == "" || longitud == "") {
+        alert ("Debes ingresar todos los campos.");
         return;
     }
     
     async function Add()
     {
+        try
+        {
         var sitios = [];
 
         // validar que no hayan sitios repetidos
-        const data = await db.collection("sitios").where("name", "==", name).get(); 
-
+        const data = await db.collection("SitiosTT").where("name", "==", name).get(); //Con base de datos correcta SitiosTT
+       
         // obtener cada dato
         data.forEach((item) => {
             sitios.push(item.data());
         })
-
+       
         for (var i = 0; i < sitios.length; i++)
         {
             var x = site[i];
             if(x["name"] == name_place)
             {
                 alert("Sitio ya existe");
-                console.log ("Sitio ya existe");
                 i = sitios.length;  //romper ciclo for
             }
             else
             {
-                db.collection("sitios").doc().set()({   //Si el sitio no existe en la colección, entonces se agrega a la base de datos
+                db.collection("SitiosTT").doc().set()({   //Si el sitio no existe en la colección, entonces se agrega a la base de datos
                     name,
                     latitud,
                     longitud,
                     disponible,
                 })
+                alert ("Sitio ingresado correctamente")
             }
         }
+    }
+    catch (error)
+    {
+        alert ("Ha ocurrido un error.");
+    }
         
     }
     Add();
@@ -115,7 +123,7 @@ async function alertaCarretera() {
     }
 
     try {
-    const sitiosref = await db.collection("TestSitios") //buscamos en una base de datos TEST ya que Aun no esta creada la verdadera CAMBIAR
+    const sitiosref = await db.collection("SitiosTT") 
     const queryy = sitiosref.where('name', '==', carretera_origen); //Buscamos en la coleccion del nombre de origen
         queryy.get().then(snapshot => {
             snapshot.docs.forEach(doc => {  
@@ -144,7 +152,7 @@ async function alertaCarretera() {
 function Carreteradañada(id,destino) {//borramos la carretera para despues actualizarla con la alerta
     var alerta = "!"+ destino;
      
-    const test = db.collection('TestSitios');
+    const test = db.collection('SitiosTT');
     test
     .doc(id)
         .update({
@@ -155,7 +163,7 @@ function Carreteradañada(id,destino) {//borramos la carretera para despues actu
 }
 
 function updatecarretera(id,cambio) { // actualizamos la base de datos con la alerta
-    const testt = db.collection('TestSitios');
+    const testt = db.collection('SitiosTT');
     testt
         .doc(id)
         .update({
