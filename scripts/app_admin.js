@@ -1,18 +1,18 @@
 function ingresarSitio() {
-  // validar que no hayan sitios repetidos
+    // validar que no hayan sitios repetidos
     // añadir sitio a la base de datos con TODAS sus variables
     var name = document.getElementById('nombre_sitio').value;
     var latitud = document.getElementById('latitud').value;
     var longitud = document.getElementById('longitud').value;
     var disponible = true;
-    var carreteras = []
+    var roads = [];
+    var coords = [];
 
     // verificar que no hayan campos vacios
     if (name == "" || latitud == "" || longitud == "") {
         alert ("Debes ingresar todos los campos.");
         return;
     }
-    
     async function Add()
     {
         try
@@ -27,25 +27,25 @@ function ingresarSitio() {
             sitios.push(item.data());
         })
        
-        for (var i = 0; i < sitios.length; i++)
+        if(sitios.length>0) //Si el arreglo donde los elementos son iguales tiene elementos
         {
-            var x = site[i];
-            if(x["name"] == name_place)
-            {
-                alert("Sitio ya existe");
-                i = sitios.length;  //romper ciclo for
-            }
-            else
-            {
-                db.collection("SitiosTT").doc().set()({   //Si el sitio no existe en la colección, entonces se agrega a la base de datos
-                    name,
-                    latitud,
-                    longitud,
-                    disponible,
-                })
-                alert ("Sitio ingresado correctamente")
-            }
+            alert("Sitio ya existe en la base de datos.");
+            return;
+               
         }
+
+        //alert("Llega hasta aca");
+        coords = [parseFloat(longitud,10), parseFloat(latitud, 10)];
+        
+        db.collection("SitiosTT").doc().set({   //Si el sitio no existe en la colección, entonces se agrega a la base de datos
+            name: name,
+            coords: coords,
+            roads: roads,
+            disponible: true,
+        })
+        alert ("Sitio ingresado correctamente");
+
+        
     }
     catch (error)
     {
@@ -53,6 +53,7 @@ function ingresarSitio() {
     }
         
     }
+    
     Add();
 }
 

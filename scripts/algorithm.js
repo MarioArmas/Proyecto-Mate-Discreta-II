@@ -77,6 +77,7 @@ async function bestRoad() {
     // add data to DOM
     document.getElementById('best_road_text').innerHTML = mejor_ruta.join(', ')
     document.getElementById('km_best').innerHTML = distancia + 'km'
+    document.getElementById('time_best').innerHTML = getAproxTime(distancia)
 }
 
 async function shortestRoad() {
@@ -153,6 +154,7 @@ async function shortestRoad() {
     // show results as an array
     document.getElementById('shortest_road_text').innerHTML = ruta_corta.join(', ');
     document.getElementById('km_short').innerHTML = distancia + 'km'
+    document.getElementById('time_short').innerHTML = getAproxTime(distancia)
 }
 
 async function collectData() {
@@ -348,4 +350,10 @@ function algorithm(matrix_adyacencia, matrix_recorridos) {
     }
 
     return [matrix_adyacencia, matrix_recorridos];
+}
+
+function getAproxTime(distance) {
+    const aproxSpeed = 90
+    const time = Math.round((distance / aproxSpeed) * 100) / 100
+    return time + 'h'
 }
