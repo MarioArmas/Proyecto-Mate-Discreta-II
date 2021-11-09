@@ -111,15 +111,20 @@ async function alertaCarretera() {
 
     if (carretera_origen == "")//verificamos que los campos no esten vacios
     {
+        window.alert("No ingreso sitio de origen")
         return;
     }
-
+    else if (carretera_destino == "")//verificamos que los campos no esten vacios
+    {
+        window.alert("No ingreso sitio de Destino")
+        return;
+    }
     try {
-    const sitiosref = await db.collection("TestSitios") //buscamos en una base de datos TEST ya que Aun no esta creada la verdadera CAMBIAR
+    const sitiosref = await db.collection("SitiosTT") //buscamos en una base de datos TEST ya que Aun no esta creada la verdadera CAMBIAR
     const queryy = sitiosref.where('name', '==', carretera_origen); //Buscamos en la coleccion del nombre de origen
         queryy.get().then(snapshot => {
             snapshot.docs.forEach(doc => {  
-                carretera = doc.data().places;   //obtenemos el valor de la matriz en el arreglo
+                carretera = doc.data().roads;   //obtenemos el valor de la matriz en el arreglo
                 for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
                 {
                     if (carretera[i]==carretera_destino)//verificamos que la carretera exista en la base de datos
@@ -130,36 +135,36 @@ async function alertaCarretera() {
                     }
                     else if(carretera[i]!=carretera_destino)
                     {
-                        
+                        window.alert("El Destino no se encuentra en la base de datos")
                     }
                 }
             })     
         })
     }
    catch {
-       console.log("Error")
+    window.alert("el origen no se encuentra en la base de datos")
    }
 }
 
 function Carreteradañada(id,destino) {//borramos la carretera para despues actualizarla con la alerta
     var alerta = "!"+ destino;
      
-    const test = db.collection('TestSitios');
+    const test = db.collection('SitiosTT');
     test
     .doc(id)
         .update({
-             places: firebase.firestore.FieldValue.arrayRemove(destino)//borramos la carretera de destino 
+             roads: firebase.firestore.FieldValue.arrayRemove(destino)//borramos la carretera de destino 
     })
     updatecarretera(id,alerta);//le damos los datos a la funcion de atualizar
 
 }
 
 function updatecarretera(id,cambio) { // actualizamos la base de datos con la alerta
-    const testt = db.collection('TestSitios');
+    const testt = db.collection('SitiosTT');
     testt
         .doc(id)
         .update({
-            places: firebase.firestore.FieldValue.arrayUnion(cambio)//agregamos una carretera ya con la alerta
+            roads: firebase.firestore.FieldValue.arrayUnion(cambio)//agregamos una carretera ya con la alerta
     })     
 }
 
