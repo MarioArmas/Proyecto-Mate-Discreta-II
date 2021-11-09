@@ -157,10 +157,67 @@ async function alertaCarretera() {
     window.alert("el origen no se encuentra en la base de datos")
    }
 }
-
-function removeAlertaCarretera() {
-
+async function removeAlertaCarretera(){
+ 
+    var carretera_o = document.getElementById('damage_road_origen').value;
+    var carretera_d = document.getElementById('damage_road_destino').value;
+    var concatenar = "!"+ carretera_d;
+    var carretera = [];   
+   
+    if (carretera_o == "")//verificamos que los campos no esten vacios
+    {
+        window.alert("No ingreso sitio de origen")
+        return;
+    }
+    else if (carretera_d == "")//verificamos que los campos no esten vacios
+    {
+        window.alert("No ingreso sitio de Destino")
+        return;
+    }
+    try {
+    const sitios = await db.collection("SitiosTT") //buscamos en una base de datos TEST ya que Aun no esta creada la verdadera CAMBIAR
+    const query = sitios.where('name', '==', carretera_o); //Buscamos en la coleccion del nombre de origen
+        query.get().then(snapshot => {
+            snapshot.docs.forEach(doc => {  
+                carretera = doc.data().roads;  
+                console.log(carretera) //obtenemos el valor de la matriz en el arreglo
+                for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
+                {
+                    if (carretera[i]==concatenar)//verificamos que la carretera exista en la base de datos
+                    {
+                        RetirarCarretera(doc.id,concatenar);  //mandamos los datos para la funcion
+                        retirarupdate(doc.id,carretera_d);//le damos los datos a la funcion de atualizar
+                        
+                    }
+                   
+                }
+            })     
+        })
+    }
+   catch {
+    window.alert("el origen no se encuentra en la base de datos")
+   }
 }
+function RetirarCarretera(id,destino) {//borramos la carretera para despues actualizarla con la alerta
+  
+     
+    const test1 = db.collection('SitiosTT');
+    test1
+    .doc(id)
+        .update({
+             roads: firebase.firestore.FieldValue.arrayRemove(destino)//borramos la carretera de destino 
+    })
+}
+
+function retirarupdate(id,cambio) { // actualizamos la base de datos con la alerta
+    const testt1 = db.collection('SitiosTT');
+    testt1
+        .doc(id)
+        .update({
+            roads: firebase.firestore.FieldValue.arrayUnion(cambio)//agregamos una carretera ya con la alerta
+    })     
+}
+
 
 function Carreteradañada(id,destino) {//borramos la carretera para despues actualizarla con la alerta
     var alerta = "!"+ destino;
