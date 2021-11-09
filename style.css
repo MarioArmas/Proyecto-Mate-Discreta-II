@@ -272,12 +272,6 @@ ADMIN & USER
         text-align: center;
     }
 
-    label{
-        display: inline-block;
-        width: 100%;
-        text-align: left;
-    }
-
     .buttons .btn{
         display: block;
         margin: 1em auto;
@@ -316,7 +310,10 @@ ADMIN
 
 /* labels */
 label{
+    display: inline-block;
     font-size: 1.2rem;
+    text-align: left;
+    width: 100%;
 }
 
 #addSite input{
@@ -346,6 +343,18 @@ label{
         text-align: center;
         padding: 1em 0;
         border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+}
+
+@media (max-width: 860px) {
+    .buttons{
+        text-align: center;
+    }
+
+    .query .btn {
+        display: block;
+        margin: 1em auto;
+        width: 100%;
     }
 }
 

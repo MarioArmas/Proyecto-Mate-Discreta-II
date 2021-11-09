@@ -157,6 +157,10 @@ async function alertaCarretera() {
    }
 }
 
+function removeAlertaCarretera() {
+
+}
+
 function Carreteradañada(id,destino) {//borramos la carretera para despues actualizarla con la alerta
     var alerta = "!"+ destino;
      
