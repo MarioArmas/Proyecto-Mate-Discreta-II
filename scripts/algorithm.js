@@ -1,33 +1,37 @@
 // const db = firebase.firestore();
 async function shortestRoad() {
-    var lugar_origen = document.getElementById('lugar_origen_short').value;
-    var lugar_destino = document.getElementById('lugar_destino_short').value;
-    var etiqueta_html = document.getElementById('shortest_road_text');
-    var ruta_corta;
+    const lugar_origen = document.getElementById('lugar_origen_short').value;
+    const lugar_destino = document.getElementById('lugar_destino_short').value;
 
     // validar que no hayan campos vacios
     if (lugar_origen == "" || lugar_destino == "") {
+        alert("Hacen falta campos por rellenar")
         return;
     }
 
-    var sitios_user_names = []
     var sitios_user = []
-    var sitios_data = []
     const data = await collectData()
-    sitios_user_names = data[0]
-    sitios_data = data[1]
+    const sitios_user_names = data[0]
+    const sitios_data = data[1]
 
     // PENDIENTE validar que se utilicen caminos que pasen unicamente por los lugares del usuario
 
     // validar que el usuario tenga añadidos los sitios
-    var isLugarOrigenInUser = false
-    var isLugarDestinoInUser = false
-    for (var i = 0; i < sitios_data.length; i++) {
-        if (lugar_origen == sitios_data[i]) isLugarOrigenInUser = true
-        if (lugar_destino == sitios_data[i]) isLugarDestinoInUser = true
+    const isLugarOrigenInUser = () => {
+        for (var i = 0; i < sitios_data.length; i++) {
+            if (lugar_origen == sitios_data[i]["name"]) return true
+        }
+        return false
+    } 
+    const isLugarDestinoInUser = () => {
+        for (var i = 0; i < sitios_data.length; i++) {
+            if (lugar_destino == sitios_data[i]["name"]) return true
+        }
+        return false
     }
     // the user does not have the places added yet
-    if (!isLugarOrigenInUser || !isLugarDestinoInUser) {
+    if (!isLugarOrigenInUser() || !isLugarDestinoInUser()) {
+        alert("Debe agregar esos lugares a sus sitios primero")
         return
     }
 
@@ -45,23 +49,30 @@ async function shortestRoad() {
 
     // make matrix
     const matrices = makeMatrix(sitios_user, sitios_data)
-    var matrix_adyacencia = matrices[0]
-    var matrix_recorridos = matrices[1]
+    const matrix_adyacencia = matrices[0]
+    const matrix_recorridos = matrices[1]
 
     // algorithm
     const matrix_results = algorithm(matrix_adyacencia, matrix_recorridos);
-    matrix_adyacencia = matrix_results[0]
-    matrix_recorridos = matrix_results[1]
+    const matrix_adyacencia_results = matrix_results[0]
+    const matrix_recorridos_results = matrix_results[1]
 
     // read results
-    const results = readResults(sitios_user, matrix_adyacencia, matrix_recorridos)
+    const results = readResults(sitios_user, matrix_adyacencia_results, matrix_recorridos_results)
     // array with shortest road in order
-    ruta_corta = results[0]
+    const ruta_corta = results[0]
     // distance from start point to end point
-    var distancia = results[1]
+    const distancia = results[1]
+
+    // validar que la distancia no sea infinito
+    if (distancia == Infinity) {
+        alert("No es posible realizar un camino hacia ese destino, hacen falta carreteras")
+        return
+    }
 
     // show results as an array
-    etiqueta_html.innerHTML = ruta_corta + ", " + distancia;
+    document.getElementById('shortest_road_text').innerHTML = ruta_corta;
+    document.getElementById('km_short').innerHTML = distancia + 'km'
 }
 
 async function collectData() {
@@ -71,7 +82,7 @@ async function collectData() {
     async function getData() {
         try {
             // get current user name
-            const responseCurrentUser = await db.collection("current_user").where("name", "==", "123").get()
+            const responseCurrentUser = await db.collection("current_user").where("name", "!=", "").get()
             
             var response_name = []
             responseCurrentUser.forEach((item) => {
