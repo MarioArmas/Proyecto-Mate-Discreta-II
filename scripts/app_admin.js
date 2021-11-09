@@ -58,9 +58,10 @@ function ingresarCarretera() {
 
     // validar que no hayan campos vacios
     if (carretera_origen == "" || carretera_destino == "") {
+        window.alert("Alerta! Campos Destino y Origen Vacíos")
         return;
     }else if(carretera_origen == carretera_destino){
-        console.warn('Same-Value');
+        window.alert("Alerta! Destino y Origen son iguales")
         return;
     }
 
@@ -85,6 +86,8 @@ function ingresarCarretera() {
                         ToFDestino=snaphijo2.data().disponible;
                         if(ToFDestino && ToFOrigen ==true){
                             AddCarretera(IdRutaOrigen,carretera_destino)
+                        }else{
+                            window.alert("Alerta! Una locación no está Disponible"); 
                         }
                     })
                 })
@@ -175,6 +178,7 @@ async function deshabilitarSitio() {
 
     // validar que no hayan campos vacios
     if (lugar == "") {
+        window.alert("Alerta! Campo Vacío")
         return;
     }
 
@@ -202,6 +206,7 @@ async function habilitarSitio() {
     
     // validar que no hayan campos vacios
     if (lugar == "") {
+        window.alert("Alerta! Campo Vacío")
         return;
     }
 
@@ -261,7 +266,5 @@ function AddCarretera(id,DestinoValue){
         .doc(id)
         .update({
             roads: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
-        }).then(()=>{
-            location.reload();
         })
 }
