@@ -321,8 +321,29 @@ function showStats() {
     // recoger todas las estadisticas que pide el doc de word y añadirlas al html
     var etiqueta_html = document.getElementById('estadisticas');
     var texto_estadisticas = "";
+    var cantidad_visitantes;
 
     // codigo
+
+    const datos = await db.collection("persona").get();
+    var users = [];
+
+    datos.forEach((item) => {
+        users.push(item.data());
+    })
+    console.log(users.length);
+    cantidad_visitantes = parseInt(users.length);
+    console.log(cantidad_visitantes);
+
+    texto_estadisticas = "Cantidad de visitantes en Guatemala: " + cantidad_visitantes.toString();
+
+    //Solo para comprobar almacenamiento del valor
+    const visitantesRef=db.collection('stats');
+    visitantesRef
+        .doc('x8zkVSG84qFQG6VQPctT')   
+        .update({
+            visitantes: cantidad_visitantes           
+        })
 
     // añadir datos al html
     etiqueta_html.innerHTML = texto_estadisticas;

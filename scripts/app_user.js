@@ -112,6 +112,11 @@ async function agregarSite(id)
     datos.forEach((item) => {
         places.push(item.data());
     })
+    if(places.length<1)
+    {
+        window.alert("El lugar que desea agregar no existe en la base de datos");
+        
+    }
 
     //Comprobar que el elemento exista
     for(var i = 0; i < places.length; i++)
@@ -129,10 +134,6 @@ async function agregarSite(id)
                 location.reload();
             })
 
-        }
-        else
-        {
-            error_btn.innerHTML = "No existe este sitio";
         }
     }
 }
