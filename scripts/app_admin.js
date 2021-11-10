@@ -67,10 +67,12 @@ async function ingresarCarretera() {
 
     // validar que no hayan campos vacios
     if (carretera_origen == "" || carretera_destino == "") {
-        window.alert("Alerta! Campos Destino y Origen Vacíos")
+        window.alert("Hacen falta campos por completar")
         return;
-    }else if(carretera_origen == carretera_destino){
-        window.alert("Alerta! Destino y Origen son iguales")
+    }
+    
+    if(carretera_origen == carretera_destino){
+        window.alert("Destino y origen son iguales")
         return;
     }
 
@@ -80,9 +82,9 @@ async function ingresarCarretera() {
     var ruteOrigenRef= await db.collection('SitiosTT').where("name","==",carretera_origen);   //Cambiar Campos a Sitio
     var ruteDestinoRef=await db.collection('SitiosTT').where("name","==",carretera_destino);
     var IdRutaOrigen;
-    var ToFOrigen,ToFDestino;
-    var alertaValue= "!"+carretera_destino;
-    var alertaArray=[];
+    var ToFOrigen, ToFDestino;
+    var alertaValue = "!" + carretera_destino;
+    var alertaArray = [];
     //SI EXISTE ALERTA! 
     try {
         const Origen2Alerta=db.collection('SitiosTT');
@@ -92,7 +94,7 @@ async function ingresarCarretera() {
                     alertaArray=doc.data().roads;
                     for(var i=0;i<alertaArray.length;i++){
                         if(alertaArray[i]==alertaValue){
-                            window.alert("Alerta! Existe una Carretera Dañada ")
+                            window.alert("Existe una Carretera Dañada ")
                             location.reload();
                         }
                     }
@@ -100,7 +102,6 @@ async function ingresarCarretera() {
             })
         
     } catch (error) {
-        
     }
 
 
@@ -114,9 +115,9 @@ async function ingresarCarretera() {
                     snapshot2.forEach(async(snaphijo2) => {
                         ToFDestino=snaphijo2.data().disponible;
                         if(ToFDestino && ToFOrigen ==true){
-                            AddCarretera(IdRutaOrigen,carretera_destino)
+                            await AddCarretera(IdRutaOrigen,carretera_destino)
                         }else{
-                            window.alert("Alerta! Una locación no está Disponible"); 
+                            window.alert("Una locación no está Disponible"); 
                         }
                     })
                 })
@@ -218,9 +219,8 @@ async function removeAlertaCarretera(){
     window.alert("el origen no se encuentra en la base de datos")
    }
 }
-function RetirarCarretera(id,destino) {//borramos la carretera para despues actualizarla con la alerta
-  
-     
+
+function RetirarCarretera(id,destino) {//borramos la carretera para despues actualizarla con la alerta     
     const test1 = db.collection('SitiosTT');
     test1
     .doc(id)
@@ -240,7 +240,7 @@ function retirarupdate(id,cambio) { // actualizamos la base de datos con la aler
 
 
 function Carreteradañada(id,destino) {//borramos la carretera para despues actualizarla con la alerta
-    var alerta = "!"+ destino;
+    const alerta = "!"+ destino;
      
     const test = db.collection('SitiosTT');
     test
@@ -248,13 +248,13 @@ function Carreteradañada(id,destino) {//borramos la carretera para despues actu
         .update({
              roads: firebase.firestore.FieldValue.arrayRemove(destino)//borramos la carretera de destino 
     })
-    updatecarretera(id,alerta);//le damos los datos a la funcion de atualizar
+    updatecarretera(id, alerta);//le damos los datos a la funcion de atualizar
 
 }
 
 function updatecarretera(id,cambio) { // actualizamos la base de datos con la alerta
-    const testt = db.collection('SitiosTT');
-    testt
+    const test = db.collection('SitiosTT');
+    test
         .doc(id)
         .update({
             roads: firebase.firestore.FieldValue.arrayUnion(cambio)//agregamos una carretera ya con la alerta
@@ -264,17 +264,17 @@ function updatecarretera(id,cambio) { // actualizamos la base de datos con la al
 async function deshabilitarSitio() { 
     // verificar que el sitio exista
     // cambiar la variable bool a false en la base de datos del sitio ingresado
-    var lugar = document.getElementById('site_disabled').value;
+    const lugar = document.getElementById('site_disabled').value;
 
     // validar que no hayan campos vacios
     if (lugar == "") {
-        window.alert("Alerta! Campo Vacío")
+        alert("Hacen falta campos por completar")
         return;
     }
 
     // codigo
     try {
-        var setDesHabiRef= await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
+        const setDesHabiRef = await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
         setDesHabiRef
             .onSnapshot(snapshot=>{
                 snapshot.forEach( (snaphijo)=>{
@@ -292,17 +292,17 @@ async function deshabilitarSitio() {
 async function habilitarSitio() {
     // verificar que el sitio exista
     // cambiar la variable bool a true en la base de datos del sitio ingresado
-    var lugar = document.getElementById('site_disabled').value;
+    const lugar = document.getElementById('site_disabled').value;
     
     // validar que no hayan campos vacios
     if (lugar == "") {
-        window.alert("Alerta! Campo Vacío")
+        alert("Alerta! Campo Vacío")
         return;
     }
 
     // codigo
     try {
-        var setHabiRef= await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
+        const setHabiRef = await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
         setHabiRef
             .onSnapshot(snapshot=>{
                 snapshot.forEach( (snaphijo)=>{
@@ -317,28 +317,23 @@ async function habilitarSitio() {
 
 }
 
-function showStats() {
+async function showStats() {
     // recoger todas las estadisticas que pide el doc de word y añadirlas al html
-    var etiqueta_html = document.getElementById('estadisticas');
-    var texto_estadisticas = "";
-    var cantidad_visitantes;
-
-    // codigo
-
+    const etiqueta_html = document.getElementById('estadisticas');
     const datos = await db.collection("persona").get();
-    var users = [];
+    const users = [];
 
     datos.forEach((item) => {
         users.push(item.data());
     })
     console.log(users.length);
-    cantidad_visitantes = parseInt(users.length);
+    const cantidad_visitantes = parseInt(users.length);
     console.log(cantidad_visitantes);
 
-    texto_estadisticas = "Cantidad de visitantes en Guatemala: " + cantidad_visitantes.toString();
+    const texto_estadisticas = "Cantidad de visitantes en Guatemala: " + cantidad_visitantes.toString();
 
     //Solo para comprobar almacenamiento del valor
-    const visitantesRef=db.collection('stats');
+    const visitantesRef = await db.collection('stats');
     visitantesRef
         .doc('x8zkVSG84qFQG6VQPctT')   
         .update({
@@ -349,8 +344,8 @@ function showStats() {
     etiqueta_html.innerHTML = texto_estadisticas;
 }
 
-function Dhabilitar(id){
-    const setEstadoRef=db.collection('SitiosTT'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
+async function Dhabilitar(id){
+    const setEstadoRef = await db.collection('SitiosTT'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
     setEstadoRef
         .doc(id)
         .update({
@@ -360,8 +355,8 @@ function Dhabilitar(id){
         })
 }
 
-function Ddeshabilitar(id){
-    const setEstadoRef=db.collection('SitiosTT'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
+async function Ddeshabilitar(id){
+    const setEstadoRef = await db.collection('SitiosTT'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
     setEstadoRef
         .doc(id)
         .update({
@@ -371,8 +366,8 @@ function Ddeshabilitar(id){
         })
 }
 
-function AddCarretera(id,DestinoValue){
-    const setCarreteraRef=db.collection('SitiosTT'); //Cambiar A SITIOS
+async function AddCarretera(id,DestinoValue){
+    const setCarreteraRef = await db.collection('SitiosTT'); //Cambiar A SITIOS
     setCarreteraRef
         .doc(id)
         .update({
