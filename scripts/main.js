@@ -46,6 +46,7 @@ function signInAdmin() {
                 name,
                 password
             });
+            alert('Admin creado con éxito')
         }
         catch (error) {
             console.log("error getting items")
@@ -151,6 +152,7 @@ function signInUser() {
                 password,
                 places
             });
+            alert('Usuario creado con éxito')
         }
         catch (error) {
             console.log("error getting items")
