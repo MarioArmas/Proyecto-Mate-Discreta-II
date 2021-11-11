@@ -1,7 +1,5 @@
-
 function agregarSitio() {
-    
-    var name_place = document.getElementById('place_name').value;
+    const name_place = document.getElementById('place_name').value;
 
     // validar que no hayan campos vacios
     if (name_place == "") {
@@ -11,7 +9,7 @@ function agregarSitio() {
 
     async function Leer()
     {
-        var users = []
+        const users = []
         const currentuser = await db.collection("current_user").get();
     
         currentuser.forEach((item) =>{
@@ -24,7 +22,7 @@ function agregarSitio() {
 }
 
 function eliminarSitio() {
-    var name_place = document.getElementById('place_name').value;
+    const name_place = document.getElementById('place_name').value;
 
     // validar que no hayan campos vacios
 
@@ -48,8 +46,7 @@ function eliminarSitio() {
     Leer()
 }
 
-async function borrarSite()
-{
+async function borrarSite() {
     var name_place = document.getElementById('place_name').value;
     
     var places = []
@@ -119,9 +116,8 @@ async function borrarSite()
     }
 }
 
-async function agregarSite()
-{
-    var name_place = document.getElementById('place_name').value;
+async function agregarSite() {
+    const name_place = document.getElementById('place_name').value;
     var places = []
     var id;
 
@@ -172,7 +168,7 @@ async function agregarSite()
                 console.log(k);
             if(k > 0)
             {
-                window.alert("este lugar ya existe en sus sitios a visitar")
+                window.alert("Este lugar ya existe en sus sitios a visitar")
             }
             else
             {
