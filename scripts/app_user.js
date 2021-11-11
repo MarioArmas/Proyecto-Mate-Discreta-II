@@ -138,45 +138,30 @@ async function agregarSite(id)
 
 
 async function mostrarSitios(){
-    var etiqueta_html = document.getElementById('mis_sitios_text');
-    var texto_vector = "No tiene sitios";
-    var sit =[];
-    var j = 0
+    const etiqueta_html = document.getElementById('mis_sitios_text');
     
-    // codigo
    //recorremos la columna de current
     var currref = db.collection('current_user').onSnapshot(query =>{
-        query.forEach(doc => {
-            console.log(doc.data()) //sacamos los datos de la columna
+        query.forEach(docCurrentUser => {
             //recorremos la columna de persona 
             var personaref = db.collection('persona')
-            .onSnapshot(quer =>{
-                quer.forEach(docp =>{
-                    console.log(docp.data())
-                   sit =  docp.data().places;
+            .onSnapshot(quer => {
+                quer.forEach(docUserData => {
+                    const sitios = docUserData.data().places;
                     //buscamos el nombre del current en el de persona
-                    if (doc.data().name === docp.data().name) {
-                        if (docp.data().places == "") {//verificamos si tiene sitios agregados
-                            etiqueta_html.innerHTML = "No tiene sitios";    
-                            return;              
+                    if (docCurrentUser.data().name === docUserData.data().name) {
+                        if (sitios.length < 1) {//verificamos si tiene sitios agregados
+                            etiqueta_html.innerHTML = "No tiene sitios"
+                            return;
                         }
-                        else
-                        {
-                  
-                          for(var i = 0; i < sit.length ; i++)  //recorremos la matriz de la base de datos 
-                            {
-                      //mostramos los sitios               
-                          etiqueta_html.innerHTML += sit[i]+ " , "  ;
-                          i++;
-                            }
-                                    
+                        else {
+                            etiqueta_html.innerHTML = sitios.join(', ')
                        }
-                }
-                   
+                    }
                 })
             });
         })
-    }); 
+    });
 }
 
 
