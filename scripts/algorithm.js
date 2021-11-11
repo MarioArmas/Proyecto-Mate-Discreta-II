@@ -1,4 +1,3 @@
-// const db = firebase.firestore();
 async function bestRoad() {
     const data = await collectData()
     const sitios_user_names = data[0]
@@ -155,6 +154,7 @@ async function shortestRoad() {
     document.getElementById('shortest_road_text').innerHTML = ruta_corta.join(', ');
     document.getElementById('km_short').innerHTML = distancia + 'km'
     document.getElementById('time_short').innerHTML = getAproxTime(distancia)
+    showMapShortRoad()
 }
 
 async function collectData() {
@@ -356,4 +356,61 @@ function getAproxTime(distance) {
     const aproxSpeed = 90
     const time = Math.round((distance / aproxSpeed) * 100) / 100
     return time + 'h'
+}
+
+async function showMapShortRoad() {
+    const text = document.getElementById('shortest_road_text').innerHTML
+    const input = text.split(', ')
+    const coordenadas = []
+
+    async function getData() {
+        const response = await db.collection("SitiosTT").where("name", "!=", "").get();
+        response.forEach((place_data) => {
+            input.forEach((place_name) => {
+                if (place_name == place_data.data()['name']) {
+                    const coords = place_data.data()['coords']
+                    coordenadas.push({lat: coords[0], lng: coords[1]})
+                }
+            })
+        })
+    }
+    await getData()
+
+    var map = new google.maps.Map(document.getElementById('map_short'),{
+        zoom: 10,
+        center: coordenadas[0] || {lat: 14.5947755, lng: -90.485321}
+    });
+
+    const newMarker = (coordenadas) => {
+        new google.maps.Marker({
+            position: coordenadas,
+            map: map,
+            draggable: false
+        });
+    }
+
+    coordenadas.forEach((coord) => {
+        newMarker(coord)
+    })
+
+    const newPoint = (lat1, lng1, lat2, lng2) => {
+        return [new google.maps.LatLng(lat1, lng1), new google.maps.LatLng(lat2, lng2)];
+    }
+
+    const newLine = (points) => {
+        new google.maps.Polyline({
+            map: map,
+            path: points,
+            strokeColor: "red",
+            strokeWeight: 6,
+            strokeOpacity: 0.5
+        });
+    }
+
+    for (var i = 0; i < coordenadas.length - 1; i++) {
+        const coord1 = coordenadas[i]
+        const coord2 = coordenadas[i + 1]
+        const point = newPoint(coord1['lat'], coord1['lng'], coord2['lat'], coord2['lng'])
+        newLine(point)
+    }
 }
