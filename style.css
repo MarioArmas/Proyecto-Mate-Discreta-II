@@ -367,11 +367,6 @@ USERS
     padding: 1.1em 2em;
 }
 
-/* inputs map */
-.user_page .hide{
-    display: none;
-}
-
 /* MAIN MEDIA QUERY */
 @media (max-width: 900px) {
     /* NAVBAR */
