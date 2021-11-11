@@ -141,6 +141,7 @@ async function alertaCarretera() {
     var carretera_origen = document.getElementById('damage_road_origen').value;
     var carretera_destino = document.getElementById('damage_road_destino').value;
     var carretera = [];                   //arreglo donde se busca en la matriz
+var Concater = "!" + carretera_destino;
 
     if (carretera_origen == "")//verificamos que los campos no esten vacios
     {
@@ -158,13 +159,20 @@ async function alertaCarretera() {
         queryy.get().then(snapshot => {
             snapshot.docs.forEach(doc => {  
                 carretera = doc.data().roads;   //obtenemos el valor de la matriz en el arreglo
+               if (carretera == "")
+               {
+                window.alert("La Base de datos esta vacia")
+               }
                 for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
                 {
                     if (carretera[i]==carretera_destino)//verificamos que la carretera exista en la base de datos
                     {
                         Carreteradañada(doc.id,carretera_destino);  //mandamos los datos para la funcion
                     
-                        mostrara.innerHTML = "La alerta fue añadida con exito "   
+                        
+                    }
+                    else if (carretera[i]==Concater){
+                        window.alert("El Destino ya esta en alerta ")
                     }
                     else if(carretera[i]!=carretera_destino)
                     {
@@ -210,6 +218,9 @@ async function removeAlertaCarretera(){
                         retirarupdate(doc.id,carretera_d);//le damos los datos a la funcion de atualizar
                         
                     }
+                    else if (carretera[i]==carretera_d){
+                        window.alert("El Destino no esta en alerta ")
+                    }
                    
                 }
             })     
@@ -219,6 +230,7 @@ async function removeAlertaCarretera(){
     window.alert("el origen no se encuentra en la base de datos")
    }
 }
+
 
 function RetirarCarretera(id,destino) {//borramos la carretera para despues actualizarla con la alerta     
     const test1 = db.collection('SitiosTT');
