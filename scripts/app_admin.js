@@ -11,44 +11,37 @@ function ingresarSitio() {
         alert ("Debes ingresar todos los campos.");
         return;
     }
-    async function Add()
-    {
-        try
-        {
-        var sitios = [];
+    async function Add() {
+        try {
+            var sitios = [];
 
-        // validar que no hayan sitios repetidos
-        const data = await db.collection("SitiosTT").where("name", "==", name).get(); //Con base de datos correcta SitiosTT
-       
-        // obtener cada dato
-        data.forEach((item) => {
-            sitios.push(item.data());
-        })
-       
-        if(sitios.length>0) //Si el arreglo donde los elementos son iguales tiene elementos
-        {
-            alert("Sitio ya existe en la base de datos.");
-            return;
-               
+            // validar que no hayan sitios repetidos
+            const data = await db.collection("SitiosTT").where("name", "==", name).get(); //Con base de datos correcta SitiosTT
+        
+            // obtener cada dato
+            data.forEach((item) => {
+                sitios.push(item.data());
+            })
+        
+            if(sitios.length>0) //Si el arreglo donde los elementos son iguales tiene elementos
+            {
+                alert("Sitio ya existe en la base de datos.");
+                return;
+            }
+
+            const coords = [parseFloat(latitud, 10), parseFloat(longitud, 10)];
+            
+            db.collection("SitiosTT").doc().set({   //Si el sitio no existe en la colección, entonces se agrega a la base de datos
+                name: name,
+                coords: coords,
+                roads: roads,
+                disponible: true,
+            })
+            alert ("Sitio ingresado correctamente");
         }
-
-        const coords = [parseFloat(latitud, 10), parseFloat(longitud, 10)];
-        
-        db.collection("SitiosTT").doc().set({   //Si el sitio no existe en la colección, entonces se agrega a la base de datos
-            name: name,
-            coords: coords,
-            roads: roads,
-            disponible: true,
-        })
-        alert ("Sitio ingresado correctamente");
-
-        
-    }
-    catch (error)
-    {
-        alert ("Ha ocurrido un error.");
-    }
-        
+        catch (error) {
+            alert ("Ha ocurrido un error.");
+        }
     }
     
     Add();
@@ -339,12 +332,11 @@ async function habilitarSitio() {
             Dhabilitar(elidxd2);
             window.alert("Se habilitó " + lugar);
         })
-        
-    } catch (error) {
+    }
+    catch (error) {
         console.log("Error: "+error)
         return;     
     }
-
 }
 
 async function showStats() {
@@ -400,22 +392,25 @@ async function AddCarretera(id,DestinoValue){
         .update({
             roads: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
         })
-        
-
 }
 
 
 async function DeletePlaces(nombredelSite){
-    const arreglofun=[];
+    const place = [];
+    const responsePlace = await db.collection('SitiosTT').where('name', '==', nombredelSite)
+    responsePlace.forEach((item) => {
+        place.push(item.data())
+    })
+
     const deletename= await db.collection('persona').where('places','array-contains',nombredelSite);
     deletename.onSnapshot(snap=>{
         snap.forEach((snapi)=>{
             //arreglofun.push(snapi.id);
-            borrarhelper(snapi.id,nombredelSite)
-            
+            if (!place[0]['disponible']) {
+                borrarhelper(snapi.id,nombredelSite)
+            }
         })
     })
-
 }
 
 async function borrarhelper(id,nombreSite2){
@@ -425,5 +420,4 @@ async function borrarhelper(id,nombreSite2){
         .update({
             places: firebase.firestore.FieldValue.arrayRemove(nombreSite2)
         })
-
 }
