@@ -301,13 +301,13 @@ async function deshabilitarSitio() {
 
     // codigo
     try {
-        const setDesHabiRef = await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
-        setDesHabiRef
-            .onSnapshot(snapshot=>{
-                snapshot.forEach( async (snaphijo)=>{
-                    Ddeshabilitar(snaphijo.id);
-                })
-            })
+        const setDesHabiRef = await db.collection('SitiosTT').where("name","==",lugar).get();  //Cambiar 'Persona' por Sitios Turisticos *no added yet
+        setDesHabiRef.forEach((item)=>{
+            const elidxd=item.id;
+            Ddeshabilitar(elidxd);
+            window.alert("Se Deshabilito "+ lugar);
+        })
+
             
     }
     catch (error) {
@@ -329,13 +329,12 @@ async function habilitarSitio() {
 
     // codigo
     try {
-        const setHabiRef = await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
-        setHabiRef
-            .onSnapshot(snapshot=>{
-                snapshot.forEach( async (snaphijo)=>{
-                    Dhabilitar(snaphijo.id);
-                })
-            })
+        const setHabiRef = await db.collection('SitiosTT').where("name","==",lugar).get();  //Cambiar 'Persona' por Sitios Turisticos *no added yet
+        setHabiRef.forEach((item)=>{
+            const elidxd2=item.id;
+            Dhabilitar(elidxd2);
+            window.alert("Se Habilitito"+lugar);
+        })
         
     } catch (error) {
         console.log("Error: "+error)
@@ -378,8 +377,6 @@ async function Dhabilitar(id){
         .doc(id)
         .update({
             disponible: true
-        }).then(() => {
-            location.reload();  //Refrescar Pantalla, Para evitar Bug de disponibilidades
         })
 }
 
@@ -389,8 +386,6 @@ async function Ddeshabilitar(id){
         .doc(id)
         .update({
             disponible: false
-        }).then(() => {
-            location.reload();    //Refrescar Pantalla, Para evitar Bug de disponibilidades
         })
 }
 
