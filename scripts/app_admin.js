@@ -308,6 +308,7 @@ async function deshabilitarSitio() {
         setDesHabiRef.forEach((item)=>{
             const elidxd=item.id;
             Ddeshabilitar(elidxd);
+            DeletePlaces(lugar);
             window.alert("Se deshabilitó " + lugar);
         })
 
@@ -400,5 +401,29 @@ async function AddCarretera(id,DestinoValue){
             roads: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
         })
         
+
+}
+
+
+async function DeletePlaces(nombredelSite){
+    const arreglofun=[];
+    const deletename= await db.collection('persona').where('places','array-contains',nombredelSite);
+    deletename.onSnapshot(snap=>{
+        snap.forEach((snapi)=>{
+            //arreglofun.push(snapi.id);
+            borrarhelper(snapi.id,nombredelSite)
+            
+        })
+    })
+
+}
+
+async function borrarhelper(id,nombreSite2){
+    const peoble= await db.collection('persona');
+    peoble
+        .doc(id)
+        .update({
+            places: firebase.firestore.FieldValue.arrayRemove(nombreSite2)
+        })
 
 }
