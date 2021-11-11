@@ -134,8 +134,7 @@ async function ingresarCarretera() {
                     })
                 })
             })   
-        }), window.alert("SE Ingreso Correctamente");
-        
+        }), alert("Se ingresó la carretera correctamente");
     } catch (error) {       //Enviar mensaje que la ruta origen no existe
         return;
     }
