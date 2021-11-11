@@ -1,3 +1,5 @@
+const db = firebase.firestore();
+
 function agregarSitio() {
     
     var name_place = document.getElementById('place_name').value;
@@ -16,16 +18,8 @@ function agregarSitio() {
         currentuser.forEach((item) =>{
             users.push(item.data());
         })
-        var valor = users[0];
-        console.log(valor["name"])
-    
-        var NewUserRef = await db.collection('persona').where("name", "==", valor["name"])
-        NewUserRef
-        .onSnapshot(snapshot=>{
-            snapshot.forEach( (snaphijo)=>{
-            agregarSite(snaphijo.id);
-            })
-        })
+        await agregarSite();
+
     }
     Leer()
 }
@@ -48,16 +42,9 @@ function eliminarSitio() {
         currentuser.forEach((item) =>{
             users.push(item.data());
         })
-        var valor = users[0];
-        console.log(valor["name"])
-    
-        var NewUserRef = await db.collection('persona').where("name", "==", valor["name"])
-        NewUserRef
-        .onSnapshot(snapshot=>{
-            snapshot.forEach( (snaphijo)=>{
-            borrarSite(snaphijo.id);
-            })
-        })
+
+        borrarSite(snaphijo.id);
+
     }
     Leer()
 }
@@ -67,8 +54,8 @@ async function borrarSite(id)
     var name_place = document.getElementById('place_name').value;
     
     var places = []
+    var id;
 
-    //colección de sitios en admin (aún no existe), mientras tanto se utiliza la provisional de SitiosTT (test)
     const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
 
     //Obteniendo todos los datos de la colección
@@ -76,26 +63,60 @@ async function borrarSite(id)
         places.push(item.data());
     })
 
-    //Comprobar que el elemento exista
-    for(var i = 0; i < places.length; i++)
+    if(places.length < 1)
     {
-        var site = places[i];
-        if(site["name"] == name_place)
-        {
-
-            const personaRef = db.collection('persona');
-            personaRef
-            .doc(id)
-            .update({
-                places : firebase.firestore.FieldValue.arrayRemove(name_place)
-            }).then(() => {
-                location.reload();
+        window.alert("El lugar que desea agregar no existe registrado");
+        
+    }
+    else
+    {
+        async function obtener()
+        {   
+            var newUser = []
+            var datasSet = []
+            var k = 0;
+    
+            const userr = await db.collection("current_user").get();
+            userr.forEach((item) =>{
+                datasSet.push(item.data());
             })
+            var arrInfo = datasSet[0];
+            var buscar = arrInfo["name"];
+    
+            const Nombreref = await db.collection('persona').where("name", "==", buscar).get()
+    
+            Nombreref.forEach((item) =>{
+                newUser.push(item.data());
+                id = item.id;
+                console.log(id);
+            })
+            console.log(newUser);
+    
+            //Proceso para comprobar la cantidad de lugares
+                var SitioL = newUser[0];
+                for(var m = 0; m < SitioL["places"].length; m++)
+                {
+                    if(SitioL["places"][m] == name_place)
+                    {
+                        k++
+                    }
+                }
+                console.log(k);
+            if(k < 1)
+            {
+                window.alert("Este sitio no está disponible para aliminarse")
+            }
+            else
+            {
+                const personaRef = db.collection('persona');
+                personaRef
+                .doc(id)
+                .update({
+                    places : firebase.firestore.FieldValue.arrayRemove(name_place)
+                })
+            }
         }
-        else
-        {
-            error_btn.innerHTML = "No existe este sitio";
-        }
+        await obtener();
     }
 }
 
@@ -103,6 +124,7 @@ async function agregarSite(id)
 {
     var name_place = document.getElementById('place_name').value;
     var places = []
+    var id;
 
     const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
 
@@ -115,25 +137,57 @@ async function agregarSite(id)
         window.alert("El lugar que desea agregar no existe en la base de datos");
         
     }
-
-    //Comprobar que el elemento exista
-    for(var i = 0; i < places.length; i++)
+    else
     {
-        var site = places[i];
-        if(site["name"] == name_place)
-        {
-
-            const personaRef = db.collection('persona');
-            personaRef
-            .doc(id)
-            .update({
-                places : firebase.firestore.FieldValue.arrayUnion(name_place)
-            }).then(() => {
-                location.reload();
+        async function obtener()
+        {   
+            var newUser = []
+            var datasSet = []
+            var k = 0;
+    
+            const userr = await db.collection("current_user").get();
+            userr.forEach((item) =>{
+                datasSet.push(item.data());
             })
-
+            var arrInfo = datasSet[0];
+            var buscar = arrInfo["name"];
+    
+            const Nombreref = await db.collection('persona').where("name", "==", buscar).get()
+    
+            Nombreref.forEach((item) =>{
+                newUser.push(item.data());
+                id = item.id;
+                console.log(id);
+            })
+            console.log(newUser);
+    
+            //Proceso para comprobar la cantidad de lugares
+                var SitioL = newUser[0];
+                for(var m = 0; m < SitioL["places"].length; m++)
+                {
+                    if(SitioL["places"][m] == name_place)
+                    {
+                        k++
+                    }
+                }
+                console.log(k);
+            if(k > 0)
+            {
+                window.alert("este lugar ya existe en sus sitios a visitar")
+            }
+            else
+            {
+                const personaRef = db.collection('persona');
+                personaRef
+                .doc(id)
+                .update({
+                    places : firebase.firestore.FieldValue.arrayUnion(name_place)
+                })
+            }
         }
+        await obtener();
     }
+    
 }
 
 
