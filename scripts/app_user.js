@@ -10,9 +10,9 @@ function agregarSitio() {
     async function Leer()
     {
         const users = []
-        const currentuser = await db.collection("current_user").get();
+        const currentUser = await db.collection("current_user").get();
     
-        currentuser.forEach((item) =>{
+        currentUser.forEach((item) =>{
             users.push(item.data());
         })
         await agregarSite();
@@ -34,21 +34,19 @@ function eliminarSitio() {
     async function Leer()
     {
         var users = []
-        const currentuser = await db.collection("current_user").get();
+        const currentUser = await db.collection("current_user").get();
     
-        currentuser.forEach((item) =>{
+        currentUser.forEach((item) =>{
             users.push(item.data());
         })
 
         borrarSite();
-
     }
     Leer()
 }
 
 async function borrarSite() {
     var name_place = document.getElementById('place_name').value;
-    
     var places = []
     var id;
 
@@ -61,7 +59,7 @@ async function borrarSite() {
 
     if(places.length < 1)
     {
-        window.alert("El lugar que desea agregar no existe registrado");
+        window.alert("El lugar que desea eliminar no existe registrado");
         
     }
     else
@@ -84,20 +82,18 @@ async function borrarSite() {
             Nombreref.forEach((item) =>{
                 newUser.push(item.data());
                 id = item.id;
-                console.log(id);
             })
-            console.log(newUser);
     
             //Proceso para comprobar la cantidad de lugares
-                var SitioL = newUser[0];
-                for(var m = 0; m < SitioL["places"].length; m++)
+            var SitioL = newUser[0];
+            for(var m = 0; m < SitioL["places"].length; m++)
+            {
+                if(SitioL["places"][m] == name_place)
                 {
-                    if(SitioL["places"][m] == name_place)
-                    {
-                        k++
-                    }
+                    k++
                 }
-                console.log(k);
+            }
+
             if(k < 1)
             {
                 window.alert("Este sitio no está disponible para aliminarse")
@@ -127,21 +123,28 @@ async function agregarSite() {
     datos.forEach((item) => {
         places.push(item.data());
     })
-    if(places.length<1)
-    {
+
+    if(places.length < 1) {
         window.alert("El lugar que desea agregar no existe en la base de datos");
         
     }
-    else
-    {
-        async function obtener()
-        {   
+    else {
+        // validar que el sitio esté disponible
+        for (var i = 0; i < places.length; i++) {
+            if (name_place == places[i]['name'] & !places[i]['disponible']) {
+                alert('El sitio no se encuentra disponible')
+                return
+            }
+        }
+
+        // realizar funcion
+        async function obtener() {   
             var newUser = []
             var datasSet = []
             var k = 0;
     
             const userr = await db.collection("current_user").get();
-            userr.forEach((item) =>{
+            userr.forEach((item) => {
                 datasSet.push(item.data());
             })
             var arrInfo = datasSet[0];
@@ -152,20 +155,18 @@ async function agregarSite() {
             Nombreref.forEach((item) =>{
                 newUser.push(item.data());
                 id = item.id;
-                console.log(id);
             })
-            console.log(newUser);
     
             //Proceso para comprobar la cantidad de lugares
-                var SitioL = newUser[0];
-                for(var m = 0; m < SitioL["places"].length; m++)
+            var SitioL = newUser[0];
+            for(var m = 0; m < SitioL["places"].length; m++)
+            {
+                if(SitioL["places"][m] == name_place)
                 {
-                    if(SitioL["places"][m] == name_place)
-                    {
-                        k++
-                    }
+                    k++
                 }
-                console.log(k);
+            }
+            
             if(k > 0)
             {
                 window.alert("Este lugar ya existe en sus sitios a visitar")
@@ -186,7 +187,7 @@ async function agregarSite() {
 }
 
 
-async function mostrarSitios(){
+async function mostrarSitios() {
     const etiqueta_html = document.getElementById('mis_sitios_text');
     
    //recorremos la columna de current
@@ -204,7 +205,7 @@ async function mostrarSitios(){
                             return;
                         }
                         else {
-                            etiqueta_html.innerHTML = sitios.join(', ')
+                            etiqueta_html.innerHTML = sitios.sort().join(', ')
                        }
                     }
                 })
