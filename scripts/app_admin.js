@@ -138,9 +138,8 @@ async function alertaCarretera() {
     // verificar que exista la carretera en la base de datos
     // modificar el vector de carreteras del objeto "lugar" en la base de datos
     // el modo en que lo vamos a hacer es añadiendo un "!" antes del nombre de la carretera
-    var carretera_origen = document.getElementById('damage_road_origen').value;
-    var carretera_destino = document.getElementById('damage_road_destino').value;
-    var carretera = [];                   //arreglo donde se busca en la matriz
+    const carretera_origen = document.getElementById('damage_road_origen').value;
+    const carretera_destino = document.getElementById('damage_road_destino').value;
 
     if (carretera_origen == "")//verificamos que los campos no esten vacios
     {
@@ -157,18 +156,23 @@ async function alertaCarretera() {
     const queryy = sitiosref.where('name', '==', carretera_origen); //Buscamos en la coleccion del nombre de origen
         queryy.get().then(snapshot => {
             snapshot.docs.forEach(doc => {  
-                carretera = doc.data().roads;   //obtenemos el valor de la matriz en el arreglo
+                const carretera = doc.data().roads;   //obtenemos el valor de la matriz en el arreglo
+                if (carretera.length < 1) {
+                    alert('La carretera ingresada no existe')
+                    return
+                }
                 for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
                 {
                     if (carretera[i]==carretera_destino)//verificamos que la carretera exista en la base de datos
                     {
                         Carreteradañada(doc.id,carretera_destino);  //mandamos los datos para la funcion
                     
-                        mostrara.innerHTML = "La alerta fue añadida con exito "   
+                        alert("La alerta fue añadida con exito ")
+                        /* mostrara.innerHTML = "La alerta fue añadida con exito "    */
                     }
-                    else if(carretera[i]!=carretera_destino)
+                    else if(carretera[i]!=carretera_destino || '!' + carretera[i] == carretera_destino)
                     {
-                        window.alert("El Destino no se encuentra en la base de datos")
+                        window.alert("La carretera ingresada no existe o ya se encuentra con una alerta")
                     }
                 }
             })     
@@ -178,46 +182,60 @@ async function alertaCarretera() {
     window.alert("el origen no se encuentra en la base de datos")
    }
 }
+
 async function removeAlertaCarretera(){
- 
-    var carretera_o = document.getElementById('damage_road_origen').value;
-    var carretera_d = document.getElementById('damage_road_destino').value;
-    var concatenar = "!"+ carretera_d;
-    var carretera = [];   
+    const carretera_origen = document.getElementById('damage_road_origen').value;
+    const carretera_destino = document.getElementById('damage_road_destino').value;
+    const concatenar = "!"+ carretera_destino;
    
-    if (carretera_o == "")//verificamos que los campos no esten vacios
+    if (carretera_origen == "")//verificamos que los campos no esten vacios
     {
         window.alert("No ingreso sitio de origen")
         return;
     }
-    else if (carretera_d == "")//verificamos que los campos no esten vacios
+    else if (carretera_destino == "")//verificamos que los campos no esten vacios
     {
         window.alert("No ingreso sitio de Destino")
         return;
     }
     try {
     const sitios = await db.collection("SitiosTT") //buscamos en una base de datos TEST ya que Aun no esta creada la verdadera CAMBIAR
-    const query = sitios.where('name', '==', carretera_o); //Buscamos en la coleccion del nombre de origen
+    const query = sitios.where('name', '==', carretera_origen); //Buscamos en la coleccion del nombre de origen
         query.get().then(snapshot => {
             snapshot.docs.forEach(doc => {  
-                carretera = doc.data().roads;  
-                console.log(carretera) //obtenemos el valor de la matriz en el arreglo
+                const carretera = doc.data().roads;
+                if (carretera.length < 1) {
+                    alert('La carretera ingresada no existe')
+                    return
+                }
+                const validarExistentRoad = () => {
+                    for (var i = 0; i < carretera.length; i++) {
+                        if (carretera[i] == carretera_destino || carretera[i] != '!' + carretera_destino) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+
+                if (validarExistentRoad()) {
+                    alert('La carretera ingresada no existe o ya se encuentra sin una alerta')
+                    return
+                }
                 for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
                 {
-                    if (carretera[i]==concatenar)//verificamos que la carretera exista en la base de datos
+                    if (carretera[i] == concatenar)//verificamos que la carretera exista en la base de datos
                     {
-                        RetirarCarretera(doc.id,concatenar);  //mandamos los datos para la funcion
-                        retirarupdate(doc.id,carretera_d);//le damos los datos a la funcion de atualizar
-                        
+                        RetirarCarretera(doc.id, concatenar);  //mandamos los datos para la funcion
+                        retirarupdate(doc.id, carretera_destino);//le damos los datos a la funcion de atualizar
+                        alert('Alerta retirada con éxito')
                     }
-                   
                 }
             })     
         })
     }
-   catch {
-    window.alert("el origen no se encuentra en la base de datos")
-   }
+    catch (error) {
+        alert("el origen no se encuentra en la base de datos")
+    }
 }
 
 function RetirarCarretera(id,destino) {//borramos la carretera para despues actualizarla con la alerta     
