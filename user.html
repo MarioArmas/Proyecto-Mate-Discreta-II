@@ -49,7 +49,8 @@
                 <div class="buttons">
                     <input type="text" id="lugar_origen_short" placeholder="Ingrese lugar origen">
                     <input type="text" id="lugar_destino_short" placeholder="Ingrese lugar destino">
-                    <button class="btn" onclick="shortestRoad()">Mostrar ruta más corta</button>
+                    <button id="btn_short" class="btn" onclick="shortestRoad()">Mostrar ruta más corta</button>
+                    <div id="map_short"></div>
                 </div>
             </div>
             
@@ -61,10 +62,10 @@
                 <p id="time_best">Tiempo aproximado</p>
                 <div class="buttons">
                     <button class="btn" onclick="bestRoad()">Mostrar ruta sugerida</button>
+                    <div id="map_best"></div>
                 </div>
             </div>
 
-            <div id="map"></div>
         </div>
     </main>
 
@@ -97,24 +98,25 @@
     <!-- Frontend -->
     <script src="./scripts/frontend/full_page_tabs.js"></script>
 
-    <!-- Google maps api -->
-    <script src="./scripts/map.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=showMap"></script>
-
     <!-- Database -->
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script> 
     <script>
-      const firebaseApp = firebase.initializeApp({ 
-        apiKey: "AIzaSyAo-y2kBPLtaH8TK6yGETuVBh9BWz1z9pE",
-        authDomain: "discretaiiproyecto.firebaseapp.com",
-        projectId: "discretaiiproyecto",
-        storageBucket: "discretaiiproyecto.appspot.com",
-        messagingSenderId: "401703141604",
-        appId: "1:401703141604:web:5d61becc6d04f8e2baacf1"
-       });
+        const firebaseApp = firebase.initializeApp({ 
+            apiKey: "AIzaSyAo-y2kBPLtaH8TK6yGETuVBh9BWz1z9pE",
+            authDomain: "discretaiiproyecto.firebaseapp.com",
+            projectId: "discretaiiproyecto",
+            storageBucket: "discretaiiproyecto.appspot.com",
+            messagingSenderId: "401703141604",
+            appId: "1:401703141604:web:5d61becc6d04f8e2baacf1"
+        });
+        const db = firebase.firestore();
     </script>
+
+    <!-- Google maps api -->
+    <script src="./scripts/map_user.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=showSimpleMap"></script>
     
     <!-- Backend -->
     <script src="./scripts/app_user.js"></script>

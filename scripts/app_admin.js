@@ -35,7 +35,7 @@ function ingresarSitio() {
         }
 
         //alert("Llega hasta aca");
-        coords = [parseFloat(longitud,10), parseFloat(latitud, 10)];
+        coords = [parseFloat(latitud,10), parseFloat(longitud, 10)];
         
         db.collection("SitiosTT").doc().set({   //Si el sitio no existe en la colección, entonces se agrega a la base de datos
             name: name,
@@ -355,6 +355,7 @@ async function showStats() {
     // añadir datos al html
     etiqueta_html.innerHTML = texto_estadisticas;
 }
+showStats();
 
 async function Dhabilitar(id){
     const setEstadoRef = await db.collection('SitiosTT'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
