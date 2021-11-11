@@ -1,4 +1,3 @@
-const db = firebase.firestore();
 
 function agregarSitio() {
     
@@ -43,13 +42,13 @@ function eliminarSitio() {
             users.push(item.data());
         })
 
-        borrarSite(snaphijo.id);
+        borrarSite();
 
     }
     Leer()
 }
 
-async function borrarSite(id)
+async function borrarSite()
 {
     var name_place = document.getElementById('place_name').value;
     
@@ -120,7 +119,7 @@ async function borrarSite(id)
     }
 }
 
-async function agregarSite(id)
+async function agregarSite()
 {
     var name_place = document.getElementById('place_name').value;
     var places = []
