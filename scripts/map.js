@@ -1,4 +1,4 @@
-function showMap(){
+function showMap() {
     const lat = parseFloat(document.getElementById("latitud").value)
     const lng = parseFloat(document.getElementById("longitud").value)
     const coordenadas = {lat, lng};

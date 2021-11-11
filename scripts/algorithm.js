@@ -77,6 +77,7 @@ async function bestRoad() {
     document.getElementById('best_road_text').innerHTML = mejor_ruta.join(', ')
     document.getElementById('km_best').innerHTML = distancia + 'km'
     document.getElementById('time_best').innerHTML = getAproxTime(distancia)
+    showMapShortRoad('best_road_text', 'map_best')
 }
 
 async function shortestRoad() {
@@ -154,7 +155,7 @@ async function shortestRoad() {
     document.getElementById('shortest_road_text').innerHTML = ruta_corta.join(', ');
     document.getElementById('km_short').innerHTML = distancia + 'km'
     document.getElementById('time_short').innerHTML = getAproxTime(distancia)
-    showMapShortRoad()
+    showMapShortRoad('shortest_road_text', 'map_short')
 }
 
 async function collectData() {
@@ -358,10 +359,18 @@ function getAproxTime(distance) {
     return time + 'h'
 }
 
-async function showMapShortRoad() {
-    const text = document.getElementById('shortest_road_text').innerHTML
+async function showMapShortRoad(htmlTextTagID, mapID) {
+    const text = document.getElementById(htmlTextTagID).innerHTML ??= 'output failed'
     const input = text.split(', ')
     const coordenadas = []
+
+    if (text == 'output failed') {
+        var map = new google.maps.Map(document.getElementById(mapID),{
+            zoom: 10,
+            center: coordenadas[0] || {lat: 14.5947755, lng: -90.485321}
+        });
+        return
+    }
 
     async function getData() {
         const response = await db.collection("SitiosTT").where("name", "!=", "").get();
@@ -376,7 +385,7 @@ async function showMapShortRoad() {
     }
     await getData()
 
-    var map = new google.maps.Map(document.getElementById('map_short'),{
+    var map = new google.maps.Map(document.getElementById(mapID),{
         zoom: 10,
         center: coordenadas[0] || {lat: 14.5947755, lng: -90.485321}
     });
