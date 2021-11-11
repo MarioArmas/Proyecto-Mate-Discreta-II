@@ -309,7 +309,7 @@ async function deshabilitarSitio() {
         setDesHabiRef.forEach((item)=>{
             const elidxd=item.id;
             Ddeshabilitar(elidxd);
-            window.alert("Se Deshabilito "+ lugar);
+            window.alert("Se deshabilitó " + lugar);
         })
 
             
@@ -337,7 +337,7 @@ async function habilitarSitio() {
         setHabiRef.forEach((item)=>{
             const elidxd2=item.id;
             Dhabilitar(elidxd2);
-            window.alert("Se Habilitito"+lugar);
+            window.alert("Se habilitó " + lugar);
         })
         
     } catch (error) {
