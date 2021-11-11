@@ -1,5 +1,3 @@
-const db = firebase.firestore();
-
 function agregarSitio() {
     
     var name_place = document.getElementById('place_name').value;

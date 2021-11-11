@@ -49,7 +49,9 @@ input:focus{
 /* ==========
 API GOOGLE MAPS
 ========== */
-#map{
+#map,
+#map_short,
+#map_best{
     height: 500px;
     width: 100%;
 }
@@ -242,8 +244,8 @@ ADMIN & USER
     margin: .3em 0;
 }
 
-.user_page #map,
-.admin_page #map{
+#map_short,
+#map_best{
     margin-top: 6em;
 }
 
