@@ -140,7 +140,9 @@ async function agregarSite(id)
 async function mostrarSitios(){
     var etiqueta_html = document.getElementById('mis_sitios_text');
     var texto_vector = "No tiene sitios";
-
+    var sit =[];
+    var j = 0
+    
     // codigo
    //recorremos la columna de current
     var currref = db.collection('current_user').onSnapshot(query =>{
@@ -151,22 +153,31 @@ async function mostrarSitios(){
             .onSnapshot(quer =>{
                 quer.forEach(docp =>{
                     console.log(docp.data())
+                   sit =  docp.data().places;
                     //buscamos el nombre del current en el de persona
                     if (doc.data().name === docp.data().name) {
                         if (docp.data().places == "") {//verificamos si tiene sitios agregados
-                            etiqueta_html.innerHTML = "No tiene sitios";
-                            return;
+                            etiqueta_html.innerHTML = "No tiene sitios";    
+                            return;              
                         }
-                        else {
-                            //mostramos los sitios
-                            etiqueta_html.innerHTML = docp.data().places;
-                            return; 
-                        }
-                    }
+                        else
+                        {
+                  
+                          for(var i = 0; i < sit.length ; i++)  //recorremos la matriz de la base de datos 
+                            {
+                      //mostramos los sitios               
+                          etiqueta_html.innerHTML += sit[i]+ " , "  ;
+                          i++;
+                            }
+                                    
+                       }
+                }
+                   
                 })
             });
         })
     }); 
 }
+
 
 mostrarSitios();

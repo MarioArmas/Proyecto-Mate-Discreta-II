@@ -85,7 +85,28 @@ async function ingresarCarretera() {
     var ToFOrigen, ToFDestino;
     var alertaValue = "!" + carretera_destino;
     var alertaArray = [];
+    var ExistRoad=[];
+    var ExistRoad2=[];
     //SI EXISTE ALERTA! 
+    const NoneValue=await db.collection('SitiosTT').where('name','==',carretera_origen).get();
+    NoneValue.forEach((item)=>{
+        ExistRoad.push(item.data());
+    })
+    if(ExistRoad.length<1){
+        window.alert("Alerta! No existe Sitio de Origen");
+        return;
+
+    }
+    const NoneValue2=await db.collection('SitiosTT').where('name','==',carretera_destino).get();
+    NoneValue2.forEach((item)=>{
+        ExistRoad2.push(item.data());
+
+    })
+    if(ExistRoad2.length<1){
+        window.alert("Alerta! No existe Sitio de Destino");
+        return;
+    }
+
     try {
         const Origen2Alerta=db.collection('SitiosTT');
         const typeQuery= Origen2Alerta.where('name','==',carretera_origen);
@@ -109,20 +130,14 @@ async function ingresarCarretera() {
     try {
         ruteOrigenRef.onSnapshot(snapshot1 => {
             snapshot1.forEach((snaphijo1) => {
-                IdRutaOrigen=snaphijo1.id
-                ToFOrigen=snaphijo1.data().disponible;       
+                IdRutaOrigen=snaphijo1.id      
                 ruteDestinoRef.onSnapshot(snapshot2 => {
                     snapshot2.forEach(async(snaphijo2) => {
-                        ToFDestino=snaphijo2.data().disponible;
-                        if(ToFDestino && ToFOrigen ==true){
-                            await AddCarretera(IdRutaOrigen,carretera_destino)
-                        }else{
-                            window.alert("Una locación no está Disponible"); 
-                        }
+                        await AddCarretera(IdRutaOrigen,carretera_destino);
                     })
                 })
-            })
-        })
+            })   
+        }), window.alert("SE Ingreso Correctamente");
         
     } catch (error) {       //Enviar mensaje que la ruta origen no existe
         return;
@@ -141,6 +156,7 @@ async function alertaCarretera() {
     var carretera_origen = document.getElementById('damage_road_origen').value;
     var carretera_destino = document.getElementById('damage_road_destino').value;
     var carretera = [];                   //arreglo donde se busca en la matriz
+var Concater = "!" + carretera_destino;
 
     if (carretera_origen == "")//verificamos que los campos no esten vacios
     {
@@ -158,13 +174,20 @@ async function alertaCarretera() {
         queryy.get().then(snapshot => {
             snapshot.docs.forEach(doc => {  
                 carretera = doc.data().roads;   //obtenemos el valor de la matriz en el arreglo
+               if (carretera == "")
+               {
+                window.alert("La Base de datos esta vacia")
+               }
                 for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
                 {
                     if (carretera[i]==carretera_destino)//verificamos que la carretera exista en la base de datos
                     {
                         Carreteradañada(doc.id,carretera_destino);  //mandamos los datos para la funcion
                     
-                        mostrara.innerHTML = "La alerta fue añadida con exito "   
+                        
+                    }
+                    else if (carretera[i]==Concater){
+                        window.alert("El Destino ya esta en alerta ")
                     }
                     else if(carretera[i]!=carretera_destino)
                     {
@@ -210,6 +233,9 @@ async function removeAlertaCarretera(){
                         retirarupdate(doc.id,carretera_d);//le damos los datos a la funcion de atualizar
                         
                     }
+                    else if (carretera[i]==carretera_d){
+                        window.alert("El Destino no esta en alerta ")
+                    }
                    
                 }
             })     
@@ -219,6 +245,7 @@ async function removeAlertaCarretera(){
     window.alert("el origen no se encuentra en la base de datos")
    }
 }
+
 
 function RetirarCarretera(id,destino) {//borramos la carretera para despues actualizarla con la alerta     
     const test1 = db.collection('SitiosTT');
@@ -274,13 +301,13 @@ async function deshabilitarSitio() {
 
     // codigo
     try {
-        const setDesHabiRef = await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
-        setDesHabiRef
-            .onSnapshot(snapshot=>{
-                snapshot.forEach( (snaphijo)=>{
-                    Ddeshabilitar(snaphijo.id);
-                })
-            })
+        const setDesHabiRef = await db.collection('SitiosTT').where("name","==",lugar).get();  //Cambiar 'Persona' por Sitios Turisticos *no added yet
+        setDesHabiRef.forEach((item)=>{
+            const elidxd=item.id;
+            Ddeshabilitar(elidxd);
+            window.alert("Se Deshabilito "+ lugar);
+        })
+
             
     }
     catch (error) {
@@ -302,13 +329,12 @@ async function habilitarSitio() {
 
     // codigo
     try {
-        const setHabiRef = await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
-        setHabiRef
-            .onSnapshot(snapshot=>{
-                snapshot.forEach( (snaphijo)=>{
-                    Dhabilitar(snaphijo.id);
-                })
-            })
+        const setHabiRef = await db.collection('SitiosTT').where("name","==",lugar).get();  //Cambiar 'Persona' por Sitios Turisticos *no added yet
+        setHabiRef.forEach((item)=>{
+            const elidxd2=item.id;
+            Dhabilitar(elidxd2);
+            window.alert("Se Habilitito"+lugar);
+        })
         
     } catch (error) {
         console.log("Error: "+error)
@@ -351,8 +377,6 @@ async function Dhabilitar(id){
         .doc(id)
         .update({
             disponible: true
-        }).then(() => {
-            location.reload();  //Refrescar Pantalla, Para evitar Bug de disponibilidades
         })
 }
 
@@ -362,8 +386,6 @@ async function Ddeshabilitar(id){
         .doc(id)
         .update({
             disponible: false
-        }).then(() => {
-            location.reload();    //Refrescar Pantalla, Para evitar Bug de disponibilidades
         })
 }
 
@@ -374,5 +396,6 @@ async function AddCarretera(id,DestinoValue){
         .update({
             roads: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
         })
+        
 
 }
