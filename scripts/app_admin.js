@@ -343,6 +343,7 @@ async function showStats() {
     // añadir datos al html
     etiqueta_html.innerHTML = texto_estadisticas;
 }
+showStats();
 
 async function Dhabilitar(id){
     const setEstadoRef = await db.collection('SitiosTT'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
