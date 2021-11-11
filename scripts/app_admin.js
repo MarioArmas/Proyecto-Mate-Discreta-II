@@ -85,7 +85,28 @@ async function ingresarCarretera() {
     var ToFOrigen, ToFDestino;
     var alertaValue = "!" + carretera_destino;
     var alertaArray = [];
+    var ExistRoad=[];
+    var ExistRoad2=[];
     //SI EXISTE ALERTA! 
+    const NoneValue=await db.collection('SitiosTT').where('name','==',carretera_origen).get();
+    NoneValue.forEach((item)=>{
+        ExistRoad.push(item.data());
+    })
+    if(ExistRoad.length<1){
+        window.alert("Alerta! No existe Sitio de Origen");
+        return;
+
+    }
+    const NoneValue2=await db.collection('SitiosTT').where('name','==',carretera_destino).get();
+    NoneValue2.forEach((item)=>{
+        ExistRoad2.push(item.data());
+
+    })
+    if(ExistRoad2.length<1){
+        window.alert("Alerta! No existe Sitio de Destino");
+        return;
+    }
+
     try {
         const Origen2Alerta=db.collection('SitiosTT');
         const typeQuery= Origen2Alerta.where('name','==',carretera_origen);
@@ -109,20 +130,14 @@ async function ingresarCarretera() {
     try {
         ruteOrigenRef.onSnapshot(snapshot1 => {
             snapshot1.forEach((snaphijo1) => {
-                IdRutaOrigen=snaphijo1.id
-                ToFOrigen=snaphijo1.data().disponible;       
+                IdRutaOrigen=snaphijo1.id      
                 ruteDestinoRef.onSnapshot(snapshot2 => {
                     snapshot2.forEach(async(snaphijo2) => {
-                        ToFDestino=snaphijo2.data().disponible;
-                        if(ToFDestino && ToFOrigen ==true){
-                            await AddCarretera(IdRutaOrigen,carretera_destino)
-                        }else{
-                            window.alert("Una locación no está Disponible"); 
-                        }
+                        await AddCarretera(IdRutaOrigen,carretera_destino);
                     })
                 })
-            })
-        })
+            })   
+        }), window.alert("SE Ingreso Correctamente");
         
     } catch (error) {       //Enviar mensaje que la ruta origen no existe
         return;
@@ -289,7 +304,7 @@ async function deshabilitarSitio() {
         const setDesHabiRef = await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
         setDesHabiRef
             .onSnapshot(snapshot=>{
-                snapshot.forEach( (snaphijo)=>{
+                snapshot.forEach( async (snaphijo)=>{
                     Ddeshabilitar(snaphijo.id);
                 })
             })
@@ -317,7 +332,7 @@ async function habilitarSitio() {
         const setHabiRef = await db.collection('SitiosTT').where("name","==",lugar);  //Cambiar 'Persona' por Sitios Turisticos *no added yet
         setHabiRef
             .onSnapshot(snapshot=>{
-                snapshot.forEach( (snaphijo)=>{
+                snapshot.forEach( async (snaphijo)=>{
                     Dhabilitar(snaphijo.id);
                 })
             })
@@ -386,5 +401,6 @@ async function AddCarretera(id,DestinoValue){
         .update({
             roads: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
         })
+        
 
 }
