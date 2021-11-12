@@ -5,6 +5,7 @@ function ingresarSitio() {
     const latitud = document.getElementById('latitud').value;
     const longitud = document.getElementById('longitud').value;
     const roads = [];
+    const visitantes = 0;
 
     // verificar que no hayan campos vacios
     if (name == "" || latitud == "" || longitud == "") {
@@ -37,6 +38,12 @@ function ingresarSitio() {
                 roads: roads,
                 disponible: true,
             })
+
+            db.collection("stats").doc().set({   //Se agrega el sitio a la colección stats para mantener el conteo de visitantes
+                name: name,
+                visitantes: visitantes
+            }) 
+
             alert ("Sitio ingresado correctamente");
         }
         catch (error) {
@@ -339,33 +346,51 @@ async function habilitarSitio() {
     }
 }
 
-async function showStats() {
-    // recoger todas las estadisticas que pide el doc de word y añadirlas al html
-    const etiqueta_html = document.getElementById('estadisticas');
-    const datos = await db.collection("persona").get();
-    const users = [];
+async function showStats() 
+{
+    visitantesGuetamala();
+    visitantesSitios(); 
+}
+showStats();
+
+async function visitantesGuetamala()
+{
+    var etiqueta_html = document.getElementById('estadisticas');
+    var texto_estadisticas = "";
+    var cantidad_visitantes;
+
+    // codigo
+    /** Cantidad de visitantes en Guatemala */
+    const datos = await db.collection('persona').get();
+    var users = [];
 
     datos.forEach((item) => {
         users.push(item.data());
     })
-    console.log(users.length);
-    const cantidad_visitantes = parseInt(users.length);
-    console.log(cantidad_visitantes);
 
-    const texto_estadisticas = "Cantidad de visitantes en Guatemala: " + cantidad_visitantes.toString();
-
-    //Solo para comprobar almacenamiento del valor
-    const visitantesRef = await db.collection('stats');
-    visitantesRef
-        .doc('x8zkVSG84qFQG6VQPctT')   
-        .update({
-            visitantes: cantidad_visitantes           
-        })
+    cantidad_visitantes = parseInt(users.length);
+    texto_estadisticas = "Cantidad de visitantes en Guatemala: " + cantidad_visitantes.toString();
 
     // añadir datos al html
     etiqueta_html.innerHTML = texto_estadisticas;
 }
-showStats();
+
+async function visitantesSitios()
+{
+    var tabla = document.getElementById('tabla');
+    db.collection("stats").get().then((querySnapshot) =>{
+        tabla.innerHTML = '';
+        querySnapshot.forEach((doc) => {
+            tabla.innerHTML += `
+            <tr>
+            <th scope="row">${doc.id}</th>
+            <td>${doc.data().name}</td>
+            <td>${doc.data().visitantes}</td>
+            </tr>
+            `
+        })
+    })
+}
 
 async function Dhabilitar(id){
     const setEstadoRef = await db.collection('SitiosTT'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
