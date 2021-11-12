@@ -179,13 +179,11 @@ async function alertaCarretera() {
                         Carreteradañada(doc.id,carretera_destino);  //mandamos los datos para la funcion
                     
                         alert("La alerta fue añadida con exito ")
+                        return
                         /* mostrara.innerHTML = "La alerta fue añadida con exito "    */
                     }
-                    else if(carretera[i]!=carretera_destino || '!' + carretera[i] == carretera_destino)
-                    {
-                        window.alert("La carretera ingresada no existe o ya se encuentra con una alerta")
-                    }
                 }
+                window.alert("La carretera ingresada no existe o ya se encuentra con una alerta")
             })     
         })
     }
@@ -239,6 +237,7 @@ async function removeAlertaCarretera(){
                         RetirarCarretera(doc.id, concatenar);  //mandamos los datos para la funcion
                         retirarupdate(doc.id, carretera_destino);//le damos los datos a la funcion de atualizar
                         alert('Alerta retirada con éxito')
+                        return
                     }
                 }
             })     
