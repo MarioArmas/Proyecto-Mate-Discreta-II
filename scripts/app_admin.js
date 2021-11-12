@@ -377,18 +377,23 @@ async function visitantesGuetamala()
 
 async function visitantesSitios()
 {
+    const data_places = []
     var tabla = document.getElementById('tabla');
-    db.collection("stats").get().then((querySnapshot) =>{
+    await db.collection("stats").get().then((querySnapshot) =>{
         tabla.innerHTML = '';
         querySnapshot.forEach((doc) => {
-            tabla.innerHTML += `
-            <tr>
-            <th scope="row">${doc.id}</th>
-            <td>${doc.data().name}</td>
-            <td>${doc.data().visitantes}</td>
-            </tr>
-            `
+            data_places.push({ name: doc.data().name, visitantes: doc.data().visitantes })
         })
+    })
+    
+    data_places.sort((a, b) => b.visitantes - a.visitantes)
+    data_places.forEach((item) => {
+        tabla.innerHTML += `
+        <tr>
+        <td>${item.name}</td>
+        <td>${item.visitantes}</td>
+        </tr>
+        `
     })
 }
 

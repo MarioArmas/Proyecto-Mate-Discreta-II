@@ -323,30 +323,29 @@ label{
 }
 
 /* table */
-table{
+#showStats table{
     background-color: #333333;
     text-align: left;
     border-collapse: collapse;
     width: 100%;
 }
 
-th, td{
+#showStats th{
+    width: 50%;
+}
+
+#showStats th, #showStats td{
     padding: 20px ;
 }
 
-thead{
+#showStats thead{
     background-color: #e60073;
     border-bottom: solid 5px #252525;
     color: white;
 }
 
-tr:nth-child(even){
+#showStats tr:nth-child(even){
     background-color: #404040;
-}
-
-/* map */
-.admin_page #map{
-    height: 300px;
 }
 
 
