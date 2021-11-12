@@ -49,6 +49,7 @@ async function borrarSite() {
     var name_place = document.getElementById('place_name').value;
     var places = []
     var id;
+    var id2;
 
     const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
 
@@ -68,22 +69,38 @@ async function borrarSite() {
         {   
             var newUser = []
             var datasSet = []
+            var visitas = []
             var k = 0;
-    
+            
+            //Se obtiene al user logueado
             const userr = await db.collection("current_user").get();
+
             userr.forEach((item) =>{
                 datasSet.push(item.data());
             })
+
             var arrInfo = datasSet[0];
             var buscar = arrInfo["name"];
     
+            //Se busca la colección entre los usuarios donde se encuentra el current user y se obtiene su id
             const Nombreref = await db.collection('persona').where("name", "==", buscar).get()
     
             Nombreref.forEach((item) =>{
                 newUser.push(item.data());
                 id = item.id;
             })
-    
+            
+            //obtener el id del sitio que se está agregando para aumentar en 1 sus visitas si es posible agregarlo
+            const SitioVisita = await db.collection('stats').where("name","==", name_place).get();
+
+            SitioVisita.forEach((item) =>{
+                visitas.push(item.data());
+                id2 = item.id;
+            })
+            
+            cant_visitas = visitas[0];
+            var contador = cant_visitas["visitantes"];
+
             //Proceso para comprobar la cantidad de lugares
             var SitioL = newUser[0];
             for(var m = 0; m < SitioL["places"].length; m++)
@@ -100,12 +117,22 @@ async function borrarSite() {
             }
             else
             {
+                contador--;
+
                 const personaRef = db.collection('persona');
                 personaRef
                 .doc(id)
                 .update({
                     places : firebase.firestore.FieldValue.arrayRemove(name_place)
                 })
+
+                //se reduce un visitante al sitio
+                const visitaRef = db.collection('stats');
+                visitaRef
+                .doc(id2)
+                .update({
+                    visitantes: contador
+                })                  
             }
         }
         await obtener();
@@ -116,6 +143,7 @@ async function agregarSite() {
     const name_place = document.getElementById('place_name').value;
     var places = []
     var id;
+    var id2;
 
     const datos = await db.collection("SitiosTT").where("name", "==", name_place).get();
 
@@ -141,21 +169,36 @@ async function agregarSite() {
         async function obtener() {   
             var newUser = []
             var datasSet = []
+            var visitas = []
             var k = 0;
     
+            //Se obtiene al user logueado
             const userr = await db.collection("current_user").get();
+
             userr.forEach((item) => {
                 datasSet.push(item.data());
             })
             var arrInfo = datasSet[0];
             var buscar = arrInfo["name"];
     
+            //Se busca la colección entre los usuarios donde se encuentra el current user y se obtiene su id
             const Nombreref = await db.collection('persona').where("name", "==", buscar).get()
-    
+
             Nombreref.forEach((item) =>{
                 newUser.push(item.data());
                 id = item.id;
             })
+
+            //obtener el id del sitio que se está agregando para aumentar en 1 sus visitas si es posible agregarlo
+            const SitioVisita = await db.collection('stats').where("name","==", name_place).get();
+
+            SitioVisita.forEach((item) =>{
+                visitas.push(item.data());
+                id2 = item.id;
+            })
+            
+            cant_visitas = visitas[0];
+            var contador = cant_visitas["visitantes"];            
     
             //Proceso para comprobar la cantidad de lugares
             var SitioL = newUser[0];
@@ -173,12 +216,22 @@ async function agregarSite() {
             }
             else
             {
+                contador++
+
                 const personaRef = db.collection('persona');
                 personaRef
                 .doc(id)
                 .update({
                     places : firebase.firestore.FieldValue.arrayUnion(name_place)
                 })
+                
+                //se aumenta un visitante al sitio
+                const visitaRef = db.collection('stats');
+                visitaRef
+                .doc(id2)
+                .update({
+                    visitantes: contador
+                })                
             }
         }
         await obtener();
