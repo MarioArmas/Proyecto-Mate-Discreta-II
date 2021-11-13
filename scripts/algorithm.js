@@ -77,7 +77,8 @@ async function bestRoad() {
     document.getElementById('best_road_text').innerHTML = mejor_ruta.join(', ')
     document.getElementById('km_best').innerHTML = distancia + 'km'
     document.getElementById('time_best').innerHTML = getAproxTime(distancia)
-    showMapShortRoad('best_road_text', 'map_best')
+    await showMapShortRoad('best_road_text', 'map_best')
+    showAlertsForRoads(mejor_ruta, sitios_data)
 }
 
 async function shortestRoad() {
@@ -155,7 +156,8 @@ async function shortestRoad() {
     document.getElementById('shortest_road_text').innerHTML = ruta_corta.join(', ');
     document.getElementById('km_short').innerHTML = distancia + 'km'
     document.getElementById('time_short').innerHTML = getAproxTime(distancia)
-    showMapShortRoad('shortest_road_text', 'map_short')
+    await showMapShortRoad('shortest_road_text', 'map_short')
+    showAlertsForRoads(ruta_corta, sitios_data)
 }
 
 async function collectData() {
@@ -219,7 +221,7 @@ function roadExists(sitios_data, sitio_origen, sitio_destino) {
         if (item["name"] == sitio_origen) {
             try {
                 item["roads"].forEach((road) => {
-                    if (road == sitio_destino) {
+                    if (road == sitio_destino || road == '!' + sitio_destino) {
                         exists = true;
                     }
                 })
@@ -252,11 +254,11 @@ function makeMatrix(sitios_user, sitios_data) {
                 // get coords
                 var lat1, lng1, lat2, lng2;
                 sitios_data.forEach((sitio) => {
-                    if (sitio["name"] == sitio_origen) {
+                    if (sitio["name"] == sitio_origen || sitio["name"] == '!' + sitio_origen) {
                         lat1 = sitio["coords"][0];
                         lng1 = sitio["coords"][1];
                     }
-                    if (sitio["name"] == sitio_destino) {
+                    if (sitio["name"] == sitio_destino || sitio["name"] == '!' + sitio_destino) {
                         lat2 = sitio["coords"][0];
                         lng2 = sitio["coords"][1];
                     }
@@ -343,8 +345,6 @@ function algorithm(matrix_adyacencia, matrix_recorridos) {
                 if (matrix_adyacencia[row][vertice] + matrix_adyacencia[vertice][column] < matrix_adyacencia[row][column]) {
                     matrix_adyacencia[row][column] = matrix_adyacencia[row][vertice] + matrix_adyacencia[vertice][column]
                     matrix_recorridos[row][column] = vertice
-                    // var ascii_value = vertice + 97
-                    // matrix_recorridos[row][column] = String.fromCharCode(ascii_value)
                 }
             }
         }
@@ -367,7 +367,7 @@ async function showMapShortRoad(htmlTextTagID, mapID) {
     if (text == 'output failed') {
         var map = new google.maps.Map(document.getElementById(mapID),{
             zoom: 10,
-            center: coordenadas[0] || {lat: 14.5947755, lng: -90.485321}
+            center: {lat: 14.5947755, lng: -90.485321}
         });
         return
     }
@@ -421,5 +421,20 @@ async function showMapShortRoad(htmlTextTagID, mapID) {
         const coord2 = coordenadas[i + 1]
         const point = newPoint(coord1['lat'], coord1['lng'], coord2['lat'], coord2['lng'])
         newLine(point)
+    }
+}
+
+function showAlertsForRoads(routeList, sitios_data) {
+    for (var i = 0; i < routeList.length - 1; i++) {
+        sitios_data.forEach((place) => {
+            // buscar lugar de inicio de la carretera
+            if (routeList[i] == place['name']) {
+                place['roads'].forEach((end_road) => {
+                    if ('!' + routeList[i + 1] == end_road) {
+                        alert(`La carretera de ${routeList[i]} hacia ${routeList[i + 1]} se encuentra dañada o inhabilitada`)
+                    }
+                })
+            }
+        })
     }
 }
