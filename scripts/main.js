@@ -6,10 +6,11 @@ function signInAdmin() {
     var password = document.getElementById('signInAdminPassword').value;
     var confirmPassword = document.getElementById('signInAdminConfirmPassword').value;
     var error_btn = document.getElementById('error_message_signin_admin');
+    let pattern = new RegExp("^(?=(.*[a-zA-Z]){1,})(?=(.*[0-9]){2,}).{8,}$")
 
     error_btn.innerHTML = "";
     error_btn.style.display = "none";
-
+    
     // evitar campos en blanco
     if (name == "" || password == "" || confirmPassword == "") {
         error_btn.innerHTML = "Hacen falta campos por completar";
@@ -22,6 +23,13 @@ function signInAdmin() {
         error_btn.innerHTML = "La contraseña no coincide";
         error_btn.style.display = 'block';
         return;
+    }
+    
+    // validar contraseña segura
+    if (!pattern.test(password)) {
+        error_btn.innerHTML = 'La contraseña no es segura, debe contener al menos 8 letras y 2 números';
+        error_btn.style.display = 'block';
+        return
     }
 
     // obtener lista de admins
@@ -110,6 +118,7 @@ function signInUser() {
     var password =  document.getElementById('signInUserPassword').value;
     var confirmPassword =  document.getElementById('signInUserConfirmPassword').value;
     var error_btn = document.getElementById('error_message_signin_user');
+    let pattern = new RegExp("^(?=(.*[a-zA-Z]){1,})(?=(.*[0-9]){2,}).{8,}$")
 
     error_btn.innerHTML = "";
     error_btn.style.display = "none";
@@ -126,6 +135,13 @@ function signInUser() {
         error_btn.innerHTML = "La contraseña no coincide";
         error_btn.style.display = 'block';
         return;
+    }
+
+    // validar contraseña segura
+    if (!pattern.test(password)) {
+        error_btn.innerHTML = 'La contraseña no es segura, debe contener al menos 8 letras y 2 números';
+        error_btn.style.display = 'block';
+        return
     }
 
     // obtener lista de users
