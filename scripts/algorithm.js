@@ -54,12 +54,36 @@ async function bestRoad() {
         }
     }
 
-    // validet if there is no posible results
+    // valide if there is no posible results
     if (roads.length < 1) {
         alert('No se ha podido calcular ninguna ruta')
         return
     }
+
+    // get the highest length (mayor cantidad de sitios visitados)
+    const getHighestLength = (list) => {
+        var highestLength = 0
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].length > highestLength) {
+                highestLength = list[i].length
+            }
+        }
+        return highestLength
+    }
+    const biggestLength = getHighestLength(roads)
     
+    const removeShortRoads = () => {
+        for (var i = 0; i < roads.length; i++) {
+            if (roads[i].length < biggestLength) {
+                // remove item from lists
+                roads.splice(i, 1)
+                distances_from_roads.splice(i, 1)
+                i -= 1
+            }
+        }
+    }
+    removeShortRoads()
+
     // get index from the shortest road
     const shortestDistance = (list) => {
         for (var i = 0; i < list.length; i++) {
