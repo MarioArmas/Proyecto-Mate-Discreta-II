@@ -163,29 +163,33 @@ async function alertaCarretera() {
         return;
     }
     try {
-    const sitiosref = await db.collection("SitiosTT") 
-    const query = sitiosref.where('name', '==', carretera_origen); //Buscamos en la coleccion del nombre de origen
-        query.get().then(snapshot => {
-            snapshot.docs.forEach(doc => {  
-                const carretera = doc.data().roads;   //obtenemos el valor de la matriz en el arreglo
-                if (carretera.length < 1) {
+        const sitiosref = await db.collection("SitiosTT") 
+        const query = sitiosref.where('name', '==', carretera_origen); //Buscamos en la coleccion del nombre de origen
+            query.get().then(snapshot => {
+                if (snapshot.docs.length < 1) {
                     alert('La carretera ingresada no existe')
                     return
                 }
-                for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
-                {
-                    if (carretera[i]==carretera_destino)//verificamos que la carretera exista en la base de datos
-                    {
-                        Carreteradañada(doc.id,carretera_destino);  //mandamos los datos para la funcion
-                    
-                        alert("La alerta fue añadida con exito ")
+                snapshot.docs.forEach(doc => {
+                    const carretera = doc.data().roads;   //obtenemos el valor de la matriz en el arreglo
+                    if (carretera.length < 1) {
+                        alert('La carretera ingresada no existe')
                         return
-                        /* mostrara.innerHTML = "La alerta fue añadida con exito "    */
                     }
-                }
-                window.alert("La carretera ingresada no existe o ya se encuentra con una alerta")
-            })     
-        })
+                    for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
+                    {
+                        if (carretera[i]==carretera_destino)//verificamos que la carretera exista en la base de datos
+                        {
+                            Carreteradañada(doc.id,carretera_destino);  //mandamos los datos para la funcion
+                        
+                            alert("La alerta fue añadida con exito ")
+                            return
+                            /* mostrara.innerHTML = "La alerta fue añadida con exito "    */
+                        }
+                    }
+                    alert("La carretera ingresada no existe o ya se encuentra con una alerta")
+                })     
+            })
     }
     catch {
         alert("el origen no se encuentra en la base de datos")
@@ -211,6 +215,10 @@ async function removeAlertaCarretera(){
     const sitios = await db.collection("SitiosTT") //buscamos en una base de datos TEST ya que Aun no esta creada la verdadera CAMBIAR
     const query = sitios.where('name', '==', carretera_origen); //Buscamos en la coleccion del nombre de origen
         query.get().then(snapshot => {
+            if (snapshot.docs.length < 1) {
+                alert('La carretera ingresada no existe')
+                return
+            }
             snapshot.docs.forEach(doc => {  
                 const carretera = doc.data().roads;
                 if (carretera.length < 1) {
@@ -219,7 +227,7 @@ async function removeAlertaCarretera(){
                 }
                 const validarExistentRoad = () => {
                     for (var i = 0; i < carretera.length; i++) {
-                        if (carretera[i] == carretera_destino || carretera[i] != '!' + carretera_destino) {
+                        if (carretera[i] == carretera_destino) {
                             return true
                         }
                     }
