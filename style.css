@@ -10,6 +10,20 @@ body{
     background-color: #222222;
 }
 
+
+.container{
+    min-height: 80vh;
+    width: 90%;
+    margin: auto;
+    align-items: center;
+}
+
+article{
+    width: 65%;
+    margin: 5em auto;
+    font-size: 1.3rem;
+}
+
 img{
     max-height: 100%;
     max-width: 100%;
@@ -39,11 +53,6 @@ input{
 
 input:focus{
     outline: none;
-}
-
-.container{
-    width: 90%;
-    margin: auto;
 }
 
 /* ==========
@@ -182,14 +191,6 @@ FORM LOGINS
     padding: 1em 0 0 3em;
     text-align: left;
     width: 100%;
-}
-
-
-/* ==========
-LAYOUT
-========== */
-article{
-    margin: 5em 0;
 }
 
 /* ==========
