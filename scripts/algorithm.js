@@ -398,8 +398,8 @@ async function showMapShortRoad(htmlTextTagID, mapID) {
 
     async function getData() {
         const response = await db.collection("SitiosTT").where("name", "!=", "").get();
-        response.forEach((place_data) => {
-            input.forEach((place_name) => {
+        input.forEach((place_name) => {
+            response.forEach((place_data) => {
                 if (place_name == place_data.data()['name']) {
                     const coords = place_data.data()['coords']
                     coordenadas.push({lat: coords[0], lng: coords[1]})
