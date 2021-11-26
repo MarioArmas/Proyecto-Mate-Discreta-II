@@ -1,57 +1,50 @@
 function ingresarSitio() {
     // validar que no hayan sitios repetidos
     // añadir sitio a la base de datos con TODAS sus variables
-    const name = document.getElementById('nombre_sitio').value;
-    const latitud = document.getElementById('latitud').value;
-    const longitud = document.getElementById('longitud').value;
-    const roads = [];
-    const visitantes = 0;
+    const name = document.getElementById('nombre_sitio').value
+    const latitud = document.getElementById('latitud').value
+    const longitud = document.getElementById('longitud').value
 
     // verificar que no hayan campos vacios
     if (name == "" || latitud == "" || longitud == "") {
-        alert ("Debes ingresar todos los campos.");
-        return;
+        alert ("Debes ingresar todos los campos.")
+        return
     }
-    async function Add() {
-        try {
-            var sitios = [];
 
-            // validar que no hayan sitios repetidos
-            const data = await db.collection("SitiosTT").where("name", "==", name).get(); //Con base de datos correcta SitiosTT
+    db.collection("SitiosTT").where("name", "==", name).get()
+    .then((data) => {
+        const sitios = []
         
-            // obtener cada dato
-            data.forEach((item) => {
-                sitios.push(item.data());
-            })
-        
-            if(sitios.length>0) //Si el arreglo donde los elementos son iguales tiene elementos
-            {
-                alert("Sitio ya existe en la base de datos.");
-                return;
-            }
-
-            const coords = [parseFloat(latitud, 10), parseFloat(longitud, 10)];
-            
-            db.collection("SitiosTT").doc().set({   //Si el sitio no existe en la colección, entonces se agrega a la base de datos
-                name: name,
-                coords: coords,
-                roads: roads,
-                disponible: true,
-            })
-
-            db.collection("stats").doc().set({   //Se agrega el sitio a la colección stats para mantener el conteo de visitantes
-                name: name,
-                visitantes: visitantes
-            }) 
-
-            alert ("Sitio ingresado correctamente");
-        }
-        catch (error) {
-            alert ("Ha ocurrido un error.");
-        }
-    }
+        // obtener cada dato
+        data.forEach((item) => {
+            sitios.push(item.data())
+        })
     
-    Add();
+        //Si el arreglo donde los elementos son iguales tiene elementos
+        if(sitios.length > 0) {
+            alert("Sitio ya existe en la base de datos.")
+            return
+        }
+
+        const coords = [parseFloat(latitud, 10), parseFloat(longitud, 10)]
+        
+        //Si el sitio no existe en la colección, entonces se agrega a la base de datos
+        db.collection("SitiosTT").doc().set({
+            name,
+            coords,
+            roads: [],
+            disponible: true
+        })
+
+        //Se agrega el sitio a la colección stats para mantener el conteo de visitantes
+        db.collection("stats").doc().set({
+            name,
+            visitantes: 0
+        }) 
+
+        alert("Sitio ingresado correctamente")
+    })
+    .catch(err => console.log('Error obteniendo los datos', err))
 }
 
 async function ingresarCarretera() {
@@ -59,88 +52,84 @@ async function ingresarCarretera() {
     // validar que no hayan carreteras repetidas
     // validar que ambos vértices existan (lugares)
     // las carreteras se van a añadir colocando el nombre del lugar destino en el objeto del lugar de inicio
-    var carretera_origen = await document.getElementById('new_road_origen').value;
-    var carretera_destino = await document.getElementById('new_road_destino').value;
+    const carretera_origen = await document.getElementById('new_road_origen').value
+    const carretera_destino = await document.getElementById('new_road_destino').value
 
     // validar que no hayan campos vacios
     if (carretera_origen == "" || carretera_destino == "") {
         window.alert("Hacen falta campos por completar")
-        return;
+        return
     }
     
     if(carretera_origen == carretera_destino){
         window.alert("Destino y origen son iguales")
-        return;
+        return
     }
 
-    // codigo
     // CAMBIAR A CAMPOS REALES , SITIOS .. NOMBRES ETC...
     //Agregar sobre su disponibiidad si su Disponibilidad es False , decir que no
-    var ruteOrigenRef= await db.collection('SitiosTT').where("name","==",carretera_origen);   //Cambiar Campos a Sitio
-    var ruteDestinoRef=await db.collection('SitiosTT').where("name","==",carretera_destino);
-    var IdRutaOrigen;
-    var ToFOrigen, ToFDestino;
-    var alertaValue = "!" + carretera_destino;
-    var alertaArray = [];
-    var ExistRoad=[];
-    var ExistRoad2=[];
+    const ruteOrigenRef = await db.collection('SitiosTT').where("name", "==", carretera_origen)
+    const ruteDestinoRef = await db.collection('SitiosTT').where("name", "==", carretera_destino)
+    const alertaValue = "!" + carretera_destino
+    const origenRoad = []
+    const destinoRoad = []
+
     //SI EXISTE ALERTA! 
-    const NoneValue=await db.collection('SitiosTT').where('name','==',carretera_origen).get();
-    NoneValue.forEach((item)=>{
-        ExistRoad.push(item.data());
+    const responseOrigen = await db.collection('SitiosTT').where('name', '==', carretera_origen).get()
+    responseOrigen.forEach((item) => {
+        origenRoad.push(item.data())
     })
-    if(ExistRoad.length<1){
-        window.alert("Alerta! No existe Sitio de Origen");
-        return;
 
+    if (origenRoad.length < 1) {
+        alert("No existe Sitio de Origen")
+        return
     }
-    const NoneValue2=await db.collection('SitiosTT').where('name','==',carretera_destino).get();
-    NoneValue2.forEach((item)=>{
-        ExistRoad2.push(item.data());
-
+    
+    const responseDestino = await db.collection('SitiosTT').where('name', '==', carretera_destino).get()
+    responseDestino.forEach((item) => {
+        destinoRoad.push(item.data())
     })
-    if(ExistRoad2.length<1){
-        window.alert("Alerta! No existe Sitio de Destino");
-        return;
+
+    if (destinoRoad.length < 1) {
+        alert("No existe Sitio de Destino")
+        return
     }
 
     try {
-        const Origen2Alerta=db.collection('SitiosTT');
-        const typeQuery= Origen2Alerta.where('name','==',carretera_origen);
-            typeQuery.get().then(snapshotalerta =>{
-                snapshotalerta.docs.forEach(doc=>{
-                    alertaArray=doc.data().roads;
-                    for(var i=0;i<alertaArray.length;i++){
-                        if(alertaArray[i]==alertaValue){
-                            window.alert("Existe una Carretera Dañada ")
-                            location.reload();
-                        }
+        await db.collection('SitiosTT').where('name', '==', carretera_origen).get()
+        .then(snapshotalerta => {
+            snapshotalerta.docs.forEach(doc => {
+                const alertaArray = doc.data().roads
+                for (var i = 0; i < alertaArray.length; i++) {
+                    if (alertaArray[i] == alertaValue) {
+                        alert("Existe una Carretera Dañada ")
+                        return
                     }
-                })
+                }
             })
-        
+        })
     } catch (error) {
+        console.log(error)
     }
 
 
     //TryCatch de Origen
     try {
-        ruteOrigenRef.onSnapshot(snapshot1 => {
-            snapshot1.forEach((snaphijo1) => {
-                IdRutaOrigen=snaphijo1.id      
-                ruteDestinoRef.onSnapshot(snapshot2 => {
-                    snapshot2.forEach(async(snaphijo2) => {
-                        await AddCarretera(IdRutaOrigen,carretera_destino);
+        ruteOrigenRef.onSnapshot(origenRoadDocs => {
+            origenRoadDocs.forEach((doc) => {
+                const idRutaOrigen = doc.id
+                ruteDestinoRef.onSnapshot(destinoRoadDocs => {
+                    destinoRoadDocs.forEach(async(snaphijo) => {
+                        await AddCarretera(idRutaOrigen, carretera_destino)
                     })
                 })
             })   
-        }), alert("Se ingresó la carretera correctamente");
-    } catch (error) {       //Enviar mensaje que la ruta origen no existe
-        return;
+        })
+        alert("Se ingresó la carretera correctamente")
+    } catch (error) {
+        console.log(error)
     }
     //TryCatch de Destino
-
-
 }
 
 async function alertaCarretera() {
@@ -149,82 +138,87 @@ async function alertaCarretera() {
     // verificar que exista la carretera en la base de datos
     // modificar el vector de carreteras del objeto "lugar" en la base de datos
     // el modo en que lo vamos a hacer es añadiendo un "!" antes del nombre de la carretera
-    const carretera_origen = document.getElementById('damage_road_origen').value;
-    const carretera_destino = document.getElementById('damage_road_destino').value;
+    const carretera_origen = document.getElementById('damage_road_origen').value
+    const carretera_destino = document.getElementById('damage_road_destino').value
 
-    if (carretera_origen == "")//verificamos que los campos no esten vacios
-    {
+    //verificamos que los campos no esten vacios
+    if (carretera_origen == "") {
         window.alert("No ingreso sitio de origen")
-        return;
+        return
     }
-    else if (carretera_destino == "")//verificamos que los campos no esten vacios
-    {
+    
+    // verificamos que los campos no esten vacios
+    if (carretera_destino == "") {
         window.alert("No ingreso sitio de Destino")
-        return;
+        return
     }
+
     try {
-        const sitiosref = await db.collection("SitiosTT") 
-        const query = sitiosref.where('name', '==', carretera_origen); //Buscamos en la coleccion del nombre de origen
-            query.get().then(snapshot => {
-                if (snapshot.docs.length < 1) {
+        db.collection("SitiosTT").where('name', '==', carretera_origen).get()
+        .then(snapshot => {
+            if (snapshot.docs.length < 1) {
+                alert('La carretera ingresada no existe')
+                return
+            }
+
+            snapshot.docs.forEach(doc => {
+                //obtenemos el valor de la matriz en el arreglo
+                const carretera = doc.data().roads
+                if (carretera.length < 1) {
                     alert('La carretera ingresada no existe')
                     return
                 }
-                snapshot.docs.forEach(doc => {
-                    const carretera = doc.data().roads;   //obtenemos el valor de la matriz en el arreglo
-                    if (carretera.length < 1) {
-                        alert('La carretera ingresada no existe')
+
+                //recorremos la matriz de la base de datos
+                for (var i = 0; i < carretera.length; i++) {
+                    //verificamos que la carretera exista en la base de datos
+                    if (carretera[i] == carretera_destino) {
+                        addAlertaInDB(doc.id, carretera_destino)
+                        alert("La alerta fue añadida con exito ")
                         return
                     }
-                    for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
-                    {
-                        if (carretera[i]==carretera_destino)//verificamos que la carretera exista en la base de datos
-                        {
-                            Carreteradañada(doc.id,carretera_destino);  //mandamos los datos para la funcion
-                        
-                            alert("La alerta fue añadida con exito ")
-                            return
-                            /* mostrara.innerHTML = "La alerta fue añadida con exito "    */
-                        }
-                    }
-                    alert("La carretera ingresada no existe o ya se encuentra con una alerta")
-                })     
-            })
+                }
+                alert("La carretera ingresada no existe o ya se encuentra con una alerta")
+            })     
+        })
     }
     catch {
         alert("el origen no se encuentra en la base de datos")
     }
 }
 
-async function removeAlertaCarretera(){
-    const carretera_origen = document.getElementById('damage_road_origen').value;
-    const carretera_destino = document.getElementById('damage_road_destino').value;
-    const concatenar = "!"+ carretera_destino;
-   
-    if (carretera_origen == "")//verificamos que los campos no esten vacios
-    {
-        window.alert("No ingreso sitio de origen")
-        return;
+function removeAlertaCarretera() {
+    const carretera_origen = document.getElementById('damage_road_origen').value
+    const carretera_destino = document.getElementById('damage_road_destino').value
+    const concatenar = "!" + carretera_destino
+
+    // verificamos que los campos no esten vacios
+    if (carretera_origen == "") {
+        alert("No ingreso sitio de origen")
+        return
     }
-    else if (carretera_destino == "")//verificamos que los campos no esten vacios
-    {
-        window.alert("No ingreso sitio de Destino")
-        return;
+
+    // verificamos que los campos no esten vacios
+    if (carretera_destino == "") {
+        alert("No ingreso sitio de Destino")
+        return
     }
+
     try {
-    const sitios = await db.collection("SitiosTT") //buscamos en una base de datos TEST ya que Aun no esta creada la verdadera CAMBIAR
-    const query = sitios.where('name', '==', carretera_origen); //Buscamos en la coleccion del nombre de origen
-        query.get().then(snapshot => {
+        db.collection("SitiosTT").where('name', '==', carretera_origen).get()
+        .then(snapshot => {
             if (snapshot.docs.length < 1) {
                 alert('La carretera ingresada no existe')
                 return
             }
+
             snapshot.docs.forEach(doc => {  
-                const carretera = doc.data().roads;
+                const carretera = doc.data().roads
                 if (carretera.length < 1) {
                     alert('La carretera ingresada no existe')
                     return
                 }
+
                 const validarExistentRoad = () => {
                     for (var i = 0; i < carretera.length; i++) {
                         if (carretera[i] == carretera_destino) {
@@ -238,12 +232,11 @@ async function removeAlertaCarretera(){
                     alert('La carretera ingresada no existe o ya se encuentra sin una alerta')
                     return
                 }
-                for(var i = 0; i < carretera.length ; i++)  //recorremos la matriz de la base de datos 
-                {
-                    if (carretera[i] == concatenar)//verificamos que la carretera exista en la base de datos
-                    {
-                        RetirarCarretera(doc.id, concatenar);  //mandamos los datos para la funcion
-                        retirarupdate(doc.id, carretera_destino);//le damos los datos a la funcion de atualizar
+
+                for(var i = 0; i < carretera.length ; i++) {
+                    // verificamos que la carretera exista en la base de datos
+                    if (carretera[i] == concatenar) {
+                        retirarAlertaInDB(doc.id, carretera_destino)
                         alert('Alerta retirada con éxito')
                         return
                     }
@@ -256,205 +249,162 @@ async function removeAlertaCarretera(){
     }
 }
 
-
-function RetirarCarretera(id,destino) {//borramos la carretera para despues actualizarla con la alerta     
-    const test1 = db.collection('SitiosTT');
-    test1
+function retirarAlertaInDB(id, carretera) {
+    db.collection('SitiosTT')
     .doc(id)
-        .update({
-             roads: firebase.firestore.FieldValue.arrayRemove(destino)//borramos la carretera de destino 
+    .update({
+        roads: firebase.firestore.FieldValue.arrayRemove('!' + carretera), 
+        roads: firebase.firestore.FieldValue.arrayUnion(carretera)
     })
 }
 
-function retirarupdate(id,cambio) { // actualizamos la base de datos con la alerta
-    const testt1 = db.collection('SitiosTT');
-    testt1
-        .doc(id)
-        .update({
-            roads: firebase.firestore.FieldValue.arrayUnion(cambio)//agregamos una carretera ya con la alerta
-    })     
-}
-
-
-function Carreteradañada(id,destino) {//borramos la carretera para despues actualizarla con la alerta
-    const alerta = "!"+ destino;
-     
-    const test = db.collection('SitiosTT');
-    test
+function addAlertaInDB(id, carretera) {
+    db.collection('SitiosTT')
     .doc(id)
-        .update({
-             roads: firebase.firestore.FieldValue.arrayRemove(destino)//borramos la carretera de destino 
+    .update({
+        roads: firebase.firestore.FieldValue.arrayRemove(carretera),
+        roads: firebase.firestore.FieldValue.arrayUnion('!' + carretera)
     })
-    updatecarretera(id, alerta);//le damos los datos a la funcion de atualizar
-
-}
-
-function updatecarretera(id,cambio) { // actualizamos la base de datos con la alerta
-    const test = db.collection('SitiosTT');
-    test
-        .doc(id)
-        .update({
-            roads: firebase.firestore.FieldValue.arrayUnion(cambio)//agregamos una carretera ya con la alerta
-    })     
 }
 
 async function deshabilitarSitio() { 
     // verificar que el sitio exista
     // cambiar la variable bool a false en la base de datos del sitio ingresado
-    const lugar = document.getElementById('site_disabled').value;
+    const lugar = document.getElementById('site_disabled').value
 
     // validar que no hayan campos vacios
     if (lugar == "") {
         alert("Hacen falta campos por completar")
-        return;
+        return
     }
 
-    // codigo
     try {
-        const setDesHabiRef = await db.collection('SitiosTT').where("name","==",lugar).get();  //Cambiar 'Persona' por Sitios Turisticos *no added yet
-        setDesHabiRef.forEach((item)=>{
-            const elidxd=item.id;
-            Ddeshabilitar(elidxd);
-            DeletePlaces(lugar);
-            window.alert("Se deshabilitó " + lugar);
-        })
-
-            
+        const response = await db.collection('SitiosTT').where("name", "==", lugar).get()
+        response.forEach(async(item) => {
+            const itemId = item.id
+            changeDisponibilidadSitio(itemId, false)
+            await deletePlaces(lugar)
+            alert("Se deshabilitó " + lugar)
+        }) 
     }
     catch (error) {
-        console.log("Error"+error)
-        return;
+        console.log("Error " + error)
+        return
     }
 }
 
 async function habilitarSitio() {
     // verificar que el sitio exista
-    // cambiar la variable bool a true en la base de datos del sitio ingresado
-    const lugar = document.getElementById('site_disabled').value;
+    const lugar = document.getElementById('site_disabled').value
     
     // validar que no hayan campos vacios
     if (lugar == "") {
-        alert("Alerta! Campo Vacío")
-        return;
+        alert("Campo Vacío")
+        return
     }
 
-    // codigo
     try {
-        const setHabiRef = await db.collection('SitiosTT').where("name","==",lugar).get();  //Cambiar 'Persona' por Sitios Turisticos *no added yet
-        setHabiRef.forEach((item)=>{
-            const elidxd2=item.id;
-            Dhabilitar(elidxd2);
-            window.alert("Se habilitó " + lugar);
+        const response = await db.collection('SitiosTT').where("name", "==", lugar).get()
+        response.forEach((item) => {
+            const itemId = item.id
+            changeDisponibilidadSitio(itemId, true)
+            alert("Se habilitó " + lugar)
         })
     }
     catch (error) {
-        console.log("Error: "+error)
-        return;     
+        console.log("Error: " + error)
+        return
     }
 }
 
-async function showStats() 
-{
-    visitantesGuetamala();
-    visitantesSitios(); 
+async function showStats() {
+    visitantesGuatemala()
+    visitantesSitios()
 }
-showStats();
+showStats()
 
-async function visitantesGuetamala()
-{
-    var etiqueta_html = document.getElementById('estadisticas');
-    var texto_estadisticas = "";
-    var cantidad_visitantes;
+async function visitantesGuatemala() {
+    const etiqueta_html = document.getElementById('estadisticas')
+    const users = []
 
-    // codigo
     /** Cantidad de visitantes en Guatemala */
-    const datos = await db.collection('persona').get();
-    var users = [];
+    const datos = await db.collection('persona').get()
 
     datos.forEach((item) => {
-        users.push(item.data());
+        users.push(item.data())
     })
 
-    cantidad_visitantes = parseInt(users.length);
-    texto_estadisticas = "Cantidad de visitantes en Guatemala: " + cantidad_visitantes.toString();
+    const cantidad_visitantes = users.length
+    const texto_estadisticas = "Cantidad de visitantes en Guatemala: " + cantidad_visitantes
 
     // añadir datos al html
-    etiqueta_html.innerHTML = texto_estadisticas;
+    etiqueta_html.innerHTML = texto_estadisticas
 }
 
-async function visitantesSitios()
-{
+function visitantesSitios() {
     const data_places = []
-    var tabla = document.getElementById('tabla');
-    await db.collection("stats").get().then((querySnapshot) =>{
-        tabla.innerHTML = '';
-        querySnapshot.forEach((doc) => {
-            data_places.push({ name: doc.data().name, visitantes: doc.data().visitantes })
-        })
-    })
+    const tabla = document.getElementById('tabla')
     
-    data_places.sort((a, b) => b.visitantes - a.visitantes)
-    data_places.forEach((item) => {
-        tabla.innerHTML += `
-        <tr>
-        <td>${item.name}</td>
-        <td>${item.visitantes}</td>
-        </tr>
-        `
+    db.collection("stats").get()
+    .then((querySnapshot) => {
+        tabla.innerHTML = ''
+        querySnapshot.forEach((doc) => {
+            data_places.push({
+                name: doc.data().name,
+                visitantes: doc.data().visitantes
+            })
+        })
+    })
+    .then(() => {
+        data_places.sort((a, b) => b.visitantes - a.visitantes)
+        data_places.forEach((item) => {
+            tabla.innerHTML += `
+            <tr>
+            <td>${item.name}</td>
+            <td>${item.visitantes}</td>
+            </tr>
+            `
+        })
     })
 }
 
-async function Dhabilitar(id){
-    const setEstadoRef = await db.collection('SitiosTT'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
-    setEstadoRef
-        .doc(id)
-        .update({
-            disponible: true
-        })
+async function changeDisponibilidadSitio(id, newBoolValue) {
+    await db.collection('SitiosTT')
+    .doc(id)
+    .update({
+        disponible: newBoolValue
+    })
 }
 
-async function Ddeshabilitar(id){
-    const setEstadoRef = await db.collection('SitiosTT'); //Cambiar A SITIOS TURISTICOS (Aun no creados) 
-    setEstadoRef
-        .doc(id)
-        .update({
-            disponible: false
-        })
+async function AddCarretera(id, DestinoValue) {
+    await db.collection('SitiosTT')
+    .doc(id)
+    .update({
+        roads: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
+    })
 }
 
-async function AddCarretera(id,DestinoValue){
-    const setCarreteraRef = await db.collection('SitiosTT'); //Cambiar A SITIOS
-    setCarreteraRef
-        .doc(id)
-        .update({
-            roads: firebase.firestore.FieldValue.arrayUnion(DestinoValue)
-        })
-}
-
-
-async function DeletePlaces(nombredelSite){
-    const place = [];
-    const responsePlace = await db.collection('SitiosTT').where('name', '==', nombredelSite)
+async function deletePlaces(nombredelSite) {
+    const place = []
+    const responsePlace = await db.collection('SitiosTT').where('name', '==', nombredelSite).get()
     responsePlace.forEach((item) => {
         place.push(item.data())
     })
 
-    const deletename= await db.collection('persona').where('places','array-contains',nombredelSite);
-    deletename.onSnapshot(snap=>{
-        snap.forEach((snapi)=>{
-            //arreglofun.push(snapi.id);
+    const deleteName = await db.collection('persona').where('places','array-contains', nombredelSite)
+    deleteName.onSnapshot(docs => {
+        docs.forEach((doc) => {
             if (!place[0]['disponible']) {
-                borrarhelper(snapi.id,nombredelSite)
+                borrarHelper(doc.id, nombredelSite)
             }
         })
     })
 }
 
-async function borrarhelper(id,nombreSite2){
-    const peoble= await db.collection('persona');
-    peoble
-        .doc(id)
-        .update({
-            places: firebase.firestore.FieldValue.arrayRemove(nombreSite2)
-        })
+async function borrarHelper(id, nombreSite){
+    await db.collection('persona')
+    .doc(id)
+    .update({
+        places: firebase.firestore.FieldValue.arrayRemove(nombreSite)
+    })
 }
